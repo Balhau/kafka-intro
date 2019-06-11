@@ -324,7 +324,122 @@
                                     ![Apache Kafka](img/partitionreplication.png)
                                 </textarea>
                         </section>
-                </section>
+		</section>
+		
+		<section>
+			<section data-markdown>
+                                <textarea data-template>
+				    ## Building Kafka data Pipelines
+				    Some principles we should *take care*
+                                </textarea>
+			</section>
+			<section data-markdown>
+                                <textarea data-template>
+				    ## Timeliness 
+				    Producers and consumers will have different *timeliness* requirements
+				    * Look at Kafka in this context is that it acts as a giant buffer that decou‐
+				    ples the time-sensitivity requirements between producers and consumers.*
+                                </textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+				    ## Reliability
+				    Validate your delivery guarantees
+				    * Kafka gives you at *least semantics*
+				    * With the help of ACID datastores you can achieve *exactly once* semantics
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					## High and Varying throughput
+					Kafka *push/pull* model enables you to decouple producer and consumer thoroughput, leverage this to
+					* Avoid the implementation of *backpressure* mechanisms
+					* Scale easily
+					* Build a system that is resilient to sudden bursts of data
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					## Contracts 
+					The data in kafka topics will need to evolve.
+					Choose your data-types that give you the flexibility to evolve your contracts
+					
+					* [Avro](https://avro.apache.org/) and [Protocol Buffers](https://developers.google.com/protocol-buffers/) are two good examples
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					## Transformations
+
+					Give preference to ELT instead of ETL 
+
+					* With *Extract Transform Load* sometimes we endup with partial data which leads to flaky messy data pipelines
+					* With *Extract Load Transform* we try preserving the context presented in the raw data as much as possible
+						* This leads to less messy data pipelines
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					## Security
+					Analyse your security requirements.
+					Do we have sensitive topics we don't wan't everyone connecting to?
+					* Use Kafka [SASL](https://en.wikipedia.org/wiki/Simple_Authentication_and_Security_Layer) authorization mechanism
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					## Failure Handling
+					Plan for failure in advance
+					* Analyse your failure scenarios
+					* Find your *recoverable* *non recoverable* errors and plan accordingly
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					## Coupling and Agility
+					* Avoid *Ad-Hoc* pipelines
+					  * Plan your data pipeline in advance
+					  * Avoid reactive design (creating consumers producers as needed)
+					* Avoid Loss of metadata
+					  * Preserve schema information for evolutionary contracts purpose
+					* Avoid extreme processing
+					  * Extreme processing hurts agility
+					  * Allow downstream components do the decisions
+				</textarea>
+			</section>						
+		</section>
+		<section>
+			<section data-markdown>
+				<textarea data-template>
+					## Administering Kafka
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+						
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+						
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+						
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+						
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+						
+				</textarea>
+			</section>
+		</section>
 
 				<!-- Example of nested vertical slides -->
 				<section>
