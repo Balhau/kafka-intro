@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>reveal.js – The HTML Presentation Framework</title>
+		<title>Apache Kafka</title>
 
 		<meta name="description" content="An Apache Kafka introduction">
 		<meta name="author" content="Vítor Fernandes">
@@ -101,6 +101,12 @@
                     </section>
                     <section data-markdown>
                             <textarea data-template>
+                                    ## Microservice architecture
+                                    ![Microservices architecture](img/metricsmicro1.png)
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
                                     ## But then...
                                     Microservices are heterogeneous
                                     * Some are quick
@@ -185,6 +191,139 @@
                                 Multiple pub/sub is hard to do on queues.
                             </textarea>
                     </section>
+                </section>
+                <section>
+                    <section data-markdown>
+                        <textarea data-template>
+                            ## ... and then what?
+                        </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                ## Wouldn't be nice if...
+                                * Some mechanism solve the queue drawbacks?
+                                * Even better if this already exist...
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                ## It exists!
+                                * Yes, at least from [1981](https://people.eecs.berkeley.edu/~brewer/cs262/SystemR.pdf)
+                                * Its called log 
+                            </textarea>
+                    </section>
+
+                    <section data-markdown>
+                            <textarea data-template>
+                                ## Cool, but...
+                                * What is a log?
+                                * How does it solve the problems?
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                ## The Log
+                                ![Anatomy of a Log](img/log1.png)
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                ## The key idea
+                                * On queues one *puts* another *picks*
+                                * On logs on *puts* another *reads*
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                ## The write/read
+                                The log write/read (as oposed to put/get) has several advantages over queues
+                                * Don't need synchronization between clients because we don't remove as soon as all
+                                consumer read the message.
+                                * If another consumer wants to join he will have the messages to *read* with queues they were
+                                consumed and hence not available
+                                * Durability is straightforward, everything is on disc.
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                ## But will it scale?
+                                Not this simple log.
+                            </textarea>
+                    </section>
+                    <section id="fragments">
+                            <h2>But a distributed log will</h2>
+                            <p class="fragment">Is there anyone</p>
+                            <p class="fragment">This exactly what <a href="">Apache Kakfa</a> is</p>
+                    </section>
+                </section>
+                <section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                    ## What is *Apache Kafka*?
+                                </textarea>
+                        </section>
+                        <section data-markdown>
+                            <textarea data-template>
+                                Apache Kafka® is a distributed streaming platform
+                            </textarea>
+                        </section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                        ## What does this even mean?
+                                </textarea>
+                        </section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                        ## A streaming platform has three key capabilities:
+                                        * Publish and subscribe to streams of records, 
+                                        similar to a message queue or enterprise messaging system.
+                                        * Store streams of records in a fault-tolerant durable way.
+                                        * Process streams of records as they occur. 
+                                </textarea>
+                        </section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                        ## Why the name *Kafka*?
+                                </textarea>
+                        </section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                *I thought that since Kafka was a system optimized for writing, using a writer’s name
+                                would make sense. I had taken a lot of lit classes in college and liked Franz Kafka. Plus
+                                the name sounded cool for an open source project.
+                                So basically there is not much of a relationship.*
+
+                                [Jay Kreps](https://www.linkedin.com/in/jaykreps/)
+                                </textarea>
+                        </section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                    ## Kafka Architecture
+                                    ![Apache Kafka](img/kafkapubsub1.png)
+                                </textarea>
+                        </section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                    ## Kafka Topic
+                                    ![Apache Kafka](img/kafkatopic2.png)
+                                </textarea>
+                        </section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                    ## The consumer group
+                                    ![Apache Kafka](img/consumergroup.png)
+                                </textarea>
+                        </section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                    ## The partition/replication on *Kafka*
+                                </textarea>
+                        </section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                    ![Apache Kafka](img/partitionreplication.png)
+                                </textarea>
+                        </section>
                 </section>
 
 				<!-- Example of nested vertical slides -->
