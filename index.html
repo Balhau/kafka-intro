@@ -1,14 +1,22 @@
 <!doctype html>
-<html>
+<html lang="en">
+
 	<head>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+		<title>Apache Kafka</title>
+
+		<meta name="description" content="An Apache Kafka introduction">
+		<meta name="author" content="Vítor Fernandes">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 		<link rel="stylesheet" href="css/reset.css">
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
 
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/monokai.css">
@@ -21,29 +29,841 @@
 			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
 			document.getElementsByTagName( 'head' )[0].appendChild( link );
 		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
 	</head>
+
 	<body>
+
 		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
+				<section data-markdown>
+					<textarea data-template>
+						# Apache Kafka
+						
+						## The distributed log
+
+						Created by [Apache Kafka](https://github.com/apache/kafka)
+
+						[Vítor Fernandes](http://codecorner.balhau.net)
+					</textarea>
+                </section>
+                
+
+                <section>
+                    <section data-markdown>
+                        <textarea data-template>
+                                ## In the beginning of time
+                        </textarea>
+                    </section>
+                    <section data-markdown>
+                        <textarea data-template>
+                                ## The dinossaur era
+                                The web was formed by *http server* responding with static content
+                        </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                    ## The three cake layer
+                                    After some time web applications become *dynamic* 
+                                    * With a three layer architecture
+
+                                    ![Three layer Architecture](img/threelayer1.png)
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                    ## But then Internet had grown...
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                    ## The monolith
+                                    Monolithic approach had some drawbacks
+                                    * Difficult to maintain
+                                    * Difficult to scale
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                    ## Microservices to the rescue
+                                    To overcome the scalling and mantainability issues monoliths start to be broken into
+                                    a microservice architecture
+                                    ![Microservices vs Monoliths](img/monovsmicro.jpg)
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                    ## The HTTP contract
+                                    Orchestraction of microservices follow a [REST](https://en.wikipedia.org/wiki/Representational_state_transfer)
+                                    approach
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                    ## Microservice architecture
+                                    ![Microservices architecture](img/metricsmicro1.png)
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                    ## But then...
+                                    Microservices are heterogeneous
+                                    * Some are quick
+                                    * Others not so...                                    
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                    ## Scale the slower ones
+                                    ![Scale the microservice](img/scalehttp1.png)
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                    ## But sometimes...
+                                    * You can't
+                                    * You don't need
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                    ## And the world went async
+                                    * Async REST contracts
+                                    * Fire and Forget
+                                    ![Async vs Sync](img/asyncvssync.png)
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                    ## And then the queue
+                                    Async solutions need a way to store the messages submited to processing
+                                    * First internal queues
+                                    * But the internal queues had local visibility would not horizontally scale
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                    ## External queues
+                                    Orchestration of async microservices start using external queue services
+                                    * Enable multiple publishers
+                                    * Enable multiple consumers
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                        <textarea data-template>
+                                ![Pub Sub v1](img/rabbitmq1.jpg)
+                        </textarea>
+                    </section>
+                    <section>
+                            <h2>The Queue Era</h2>
+                            <p>Several queue implementation mechanisms arrive to solve the world</p>
+                            <img src="img/rabbitmq.png" width="50%"/>
+                            <img src="img/activemq.png"/>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                ## But then things got messy...
+                            </textarea>
+                    </section>
+
+                    <section data-markdown>
+                            <textarea data-template>
+                                ## Queues...
+                                * Don't scale horizontally
+                                * Don't persist data easily
+                                * Don't shard
+                                * Multiple publisher/subscriber is hard
+                            </textarea>
+                    </section>
+                    
+                    <section data-markdown>
+                            <textarea data-template>
+                                ## What is wrong then?
+                                * Queues implementation are memory oriented, memory is volatile.
+                                * Queue paradigm is based on the principle that one puts other gests
+                                    * With multiple subscribers some of them fail... *some for very long*
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                ## Reallity
+                                Multiple pub/sub is hard to do on queues.
+                            </textarea>
+                    </section>
+                </section>
+                <section>
+                    <section data-markdown>
+                        <textarea data-template>
+                            ## ... and then what?
+                        </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                ## Wouldn't be nice if...
+                                * Some mechanism solve the queue drawbacks?
+                                * Even better if this already exist...
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                ## It exists!
+                                * Yes, at least from [1981](https://people.eecs.berkeley.edu/~brewer/cs262/SystemR.pdf)
+                                * Its called log 
+                            </textarea>
+                    </section>
+
+                    <section data-markdown>
+                            <textarea data-template>
+                                ## Cool, but...
+                                * What is a log?
+                                * How does it solve the problems?
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                ## The Log
+                                ![Anatomy of a Log](img/log1.png)
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                ## The key idea
+                                * On queues one *puts* another *picks*
+                                * On logs on *puts* another *reads*
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                ## The write/read
+                                The log write/read (as oposed to put/get) has several advantages over queues
+                                * Don't need synchronization between clients because we don't remove as soon as all
+                                consumer read the message.
+                                * If another consumer wants to join he will have the messages to *read* with queues they were
+                                consumed and hence not available
+                                * Durability is straightforward, everything is on disc.
+                            </textarea>
+                    </section>
+                    <section data-markdown>
+                            <textarea data-template>
+                                ## But will it scale?
+                                Not this simple log.
+                            </textarea>
+                    </section>
+                    <section id="fragments">
+                            <h2>But a distributed log will</h2>
+                            <p class="fragment">Is there anyone</p>
+                            <p class="fragment">This exactly what <a href="">Apache Kakfa</a> is</p>
+                    </section>
+                </section>
+                <section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                    ## What is *Apache Kafka*?
+                                </textarea>
+                        </section>
+                        <section data-markdown>
+                            <textarea data-template>
+                                Apache Kafka® is a distributed streaming platform
+                            </textarea>
+                        </section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                        ## What does this even mean?
+                                </textarea>
+                        </section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                        ## A streaming platform has three key capabilities:
+                                        * Publish and subscribe to streams of records, 
+                                        similar to a message queue or enterprise messaging system.
+                                        * Store streams of records in a fault-tolerant durable way.
+                                        * Process streams of records as they occur. 
+                                </textarea>
+                        </section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                        ## Why the name *Kafka*?
+                                </textarea>
+                        </section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                *I thought that since Kafka was a system optimized for writing, using a writer’s name
+                                would make sense. I had taken a lot of lit classes in college and liked Franz Kafka. Plus
+                                the name sounded cool for an open source project.
+                                So basically there is not much of a relationship.*
+
+                                [Jay Kreps](https://www.linkedin.com/in/jaykreps/)
+                                </textarea>
+                        </section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                    ## Kafka Architecture
+                                    ![Apache Kafka](img/kafkapubsub1.png)
+                                </textarea>
+                        </section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                    ## Kafka Topic
+                                    ![Apache Kafka](img/kafkatopic2.png)
+                                </textarea>
+                        </section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                    ## The consumer group
+                                    ![Apache Kafka](img/consumergroup.png)
+                                </textarea>
+                        </section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                    ## The partition/replication on *Kafka*
+                                </textarea>
+                        </section>
+                        <section data-markdown>
+                                <textarea data-template>
+                                    ![Apache Kafka](img/partitionreplication.png)
+                                </textarea>
+                        </section>
+		</section>
+		
+		<section>
+			<section data-markdown>
+                                <textarea data-template>
+				    ## Building Kafka data Pipelines
+				    Some principles we should *take care*
+                                </textarea>
+			</section>
+			<section data-markdown>
+                                <textarea data-template>
+				    ## Timeliness 
+				    Producers and consumers will have different *timeliness* requirements
+				    * Look at Kafka in this context is that it acts as a giant buffer that decou‐
+				    ples the time-sensitivity requirements between producers and consumers.*
+                                </textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+				    ## Reliability
+				    Validate your delivery guarantees
+				    * Kafka gives you at *least semantics*
+				    * With the help of ACID datastores you can achieve *exactly once* semantics
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					## High and Varying throughput
+					Kafka *push/pull* model enables you to decouple producer and consumer thoroughput, leverage this to
+					* Avoid the implementation of *backpressure* mechanisms
+					* Scale easily
+					* Build a system that is resilient to sudden bursts of data
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					## Contracts 
+					The data in kafka topics will need to evolve.
+					Choose your data-types that give you the flexibility to evolve your contracts
+					
+					* [Avro](https://avro.apache.org/) and [Protocol Buffers](https://developers.google.com/protocol-buffers/) are two good examples
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					## Transformations
+
+					Give preference to ELT instead of ETL 
+
+					* With *Extract Transform Load* sometimes we endup with partial data which leads to flaky messy data pipelines
+					* With *Extract Load Transform* we try preserving the context presented in the raw data as much as possible
+						* This leads to less messy data pipelines
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					## Security
+					Analyse your security requirements.
+					Do we have sensitive topics we don't wan't everyone connecting to?
+					* Use Kafka [SASL](https://en.wikipedia.org/wiki/Simple_Authentication_and_Security_Layer) authorization mechanism
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					## Failure Handling
+					Plan for failure in advance
+					* Analyse your failure scenarios
+					* Find your *recoverable* *non recoverable* errors and plan accordingly
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					## Coupling and Agility
+					* Avoid *Ad-Hoc* pipelines
+					  * Plan your data pipeline in advance
+					  * Avoid reactive design (creating consumers producers as needed)
+					* Avoid Loss of metadata
+					  * Preserve schema information for evolutionary contracts purpose
+					* Avoid extreme processing
+					  * Extreme processing hurts agility
+					  * Allow downstream components do the decisions
+				</textarea>
+			</section>						
+		</section>
+		<section>
+			<section data-markdown>
+				<textarea data-template>
+					## Cross-Cluster Architectures
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					### Why cross-cluster architectures
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					* Regional and central clusters
+					* Redundancy (data recovery)
+					* Cloud migrations
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					### Multi cluster architectures
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Some limitations
+
+					* High Latencies
+						* Latency increases lineary with distance and the number of ops
+						in the network
+					* Limited bandwidh
+						* WANs have less bandwith than intra datacenter comunications
+					* Higher costs
+						* Due the need to improve bandwidth and latency
+						requirements
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Hub-and-Spokes Architecture
+					![Hub and Spokes Architecture](img/hubandspokes1.png)
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					![Hub and Spokes Architecture](img/hubandspokes2.png)	
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					##### Advantages
+					* Leverage of data locality by producing always to the local cluster
+					* Data mirrowed once, to the central cluster
+					* Simple to deploy mirror and monitor
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					##### Disadvantages
+					* Data locality makes hard for local processor in local *A* to access
+					data from local *B*
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Active-Active Architecture
+					![Active-Active](img/activeactive1.png)
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					##### Advantages
+					* Leverage of data locality without scacrificing functionality
+					due to limited availability of data
+					* Redundancy and resilience
+					* Cost effective
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					##### Disadvantages
+					* Hard to manage conflicting async read/write operations from different
+					locations
+					* Careful need to avoid endless replication of data
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Active-Passive Architecture	
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					![Active-Passive Architecture](img/activepassive.png)
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					##### Advantages
+					* Simplicity of implementation
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					##### Disadvantages
+					* Wast of resources
+						* Since it is not actively serving traffic
+					* Failover between kafka clusters harder than it looks
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					##### Unplanned failover strategies
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Start offset applications after failover
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Auto offset reset
+					* Deal with duplicate or data loss
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Replicate offsets topic
+					![Topics Duplication](img/topicsreplication.png)
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Caveats
+					* The replication of offsets will not work in some cases
+						* Some compromises must be done
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					##### Time-based failover
+					* Version consumers on *0.10* and above have a timestamp in the message
+					this can be used to control the reprocessing of messages
+					* However you need to deal with data loss or duplicates
+						* The window is much smaller though 
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					##### External offset mapping
+					* Instead of replication of offsets we can map them 
+					(for example to a database)
+						* The window to loss/duplicate of data is even lesser
+						* Higher complexity though
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					##### After the failover
+					* Tempting to switch active to passive and resync
+						* This is tricky
+					* Better to
+						* Become active to passive
+						* Erase the old active cluster 
+						* Start sync with new active
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Stretch Cluster Architecture
+					* One cluster spread across several datacenters
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					##### Advantages
+					* Synchronous replication
+					* All datacenters are being used (less wast of resources)
+					* Protection against datacenter failures (not application failures)
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Disadvantages
+					* This architecture needs three datacenters for zookeepers
+						* If we only have two dc for zookeepers you'll not be able to reach
+						quorum
+					* Latency and bandwidth are high because of zookeeper sensitivity
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					### Mirror Maker
+					A tool to replicate kafka topics between clusters
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					![Mirror Maker](img/mirrormaker.png)
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Running Mirror Maker
+					```
+					bin/kafka-mirror-maker 
+					--consumer.config etc/kafka/consumer.properties 
+					--producer.config etc/kafka/producer.properties 
+					--new.consumer -num.streams=2 
+					--whitelist ".*"
+					```
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Mirror Maker in production
+					* If using containers run it inside one
+						* Better scaling
+						* Better failover control
+					* Monitor the *Lag*
+					* Tune your Mirror Maker cluster
+						* You can use `kafka-performance-producer`
+						to help
+						* Target `lag SLOs`
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Other replication tools
+					* [uReplicaticator](https://github.com/uber/uReplicator)
+					* [Confluent Replicator](https://docs.confluent.io/current/connect/kafka-connect-replicator/index.html)
+					* Here in PPB we usually use a Storm Topology
+						* It has all the failover and scalling capabilities we need
+				</textarea>
+			</section>
+		</section>
+		<section>
+				<section data-markdown>
+					<textarea data-template>
+						## Administering Kafka
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Topic Operations
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						Creating a topic
+						```
+						kafka-topics 
+							--create 
+							--zookeeper zoo1.example.com:2181/kafka-cluster
+							--topic my.topic 
+							--replication-factor 1 
+							--partitions 1 
+							--config "cleanup.policy=compaction" 
+							--config "delete.retention.ms=100"  
+							--config "segment.ms=100" 
+							--config "min.cleanable.dirty.ratio=0.01"
+						```
+
+						dirty ratio = the number of bytes in the head / total number of bytes in the log(tail + head)
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						Deleting a topic
+						```
+						kafka-topics.sh 
+							--zookeeper zoo1.example.com:2181/kafka-cluster
+							--delete --topic my-topic
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						List topics
+						```
+						kafka-topics.sh 
+						--zookeeper zoo1.example.com:2181/kafka-cluster
+						--list
+						```	
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						Describe topics
+						```
+						kafka-topics.sh --zookeeper zoo1.example.com:2181/kafka-cluster --describe
+						Topic:other-topic PartitionCount:8 ReplicationFactor:2 Configs: 
+						Topic:other-topic Partition: 0     Replicas: 1,0       Isr: 1,0
+						Topic:other-topic Partition: 1     Replicas: 0,1       Isr: 0,1
+						Topic:other-topic Partition: 2     Replicas: 1,0       Isr: 1,0
+						Topic:other-topic Partition: 3     Replicas: 0,1       Isr: 0,1
+						Topic:other-topic Partition: 4     Replicas: 1,0       Isr: 1,0
+						Topic:other-topic Partition: 5     Replicas: 0,1       Isr: 0,1
+						Topic:other-topic Partition: 6     Replicas: 1,0       Isr: 1,0
+						Topic:other-topic Partition: 7     Replicas: 0,1       Isr: 0,1
+						```	
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						Describe topic partitions not in sync
+						```
+						kafka-topics.sh --zookeeper zoo1.example.com:2181/kafka-cluster
+						--describe 
+						--under-replicated-partitions
+
+						Topic: other-topic Partition: 2 Leader: 0 Replicas: 1,0 Isr: 0
+						Topic: other-topic Partition: 4 Leader: 0 Replicas: 1,0 Isr: 0
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Consumer Groups
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						List consumer groups
+						```
+						kafka-consumer-groups.sh 
+						--zookeeper zoo1.example.com:2181/kafka-cluster 
+						--list
+						
+						console-consumer-79697
+						myconsumer
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					Describe consumer groups
+					```
+					kafka-consumer-groups.sh 
+					--zookeeper zoo1.example.com:2181/kafka-cluster
+					--describe --group testgroup
+					GROUP      TOPIC    PARTITION CURRENT-OFFSET LOG-END-OFFSET LAG OWNER
+					testgroup my-topic 0         1688           1688           0   testgroup_host1.example.com-1478188622741-7dab5ca7-0
+					testgroup my-topic 1         1418           1418           0   testgroup_host1.example.com-1478188622741-7dab5ca7-0
+					testgroup my-topic 2         1314           1315           1   testgroup_host1.example.com-1478188622741-7dab5ca7-0
+					testgroup my-topic 3         2012           2012           0   testgroup_host1.example.com-1478188622741-7dab5ca7-0
+					testgroup my-topic 4         1089           1089           0   testgroup_host1.example.com-1478188622741-7dab5ca7-0
+					testgroup my-topic 5         1429           1432           3   testgroup_host1.example.com-1478188622741-7dab5ca7-0
+					testgroup my-topic 6         1634           1634           0   testgroup_host1.example.com-1478188622741-7dab5ca7-0
+					testgroup my-topic 7         2261           2261           0   testgroup_host1.example.com-1478188622741-7dab5ca7-0
+					```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						Delete consumer group
+						```
+						kafka-consumer-groups.sh 
+						--zookeeper zoo1.example.com:2181/kafka-cluster 
+						--delete 
+						--group testgroup
+						--topic my-topic
+						
+						Deleted all consumer group information for group testgroup topic
+						my-topic in zookeeper.
+						```
+
+						If you don't provide the `--topic` argument it will delete the consumer group for
+						all the topics.
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+							
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+							
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+							
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+							
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+							
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+							
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+							
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+							
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+							
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+							
+					</textarea>
+				</section>
+			</section>
 			</div>
+
 		</div>
 
 		<script src="js/reveal.js"></script>
 
 		<script>
-			// More info about config & dependencies:
-			// - https://github.com/hakimel/reveal.js#configuration
-			// - https://github.com/hakimel/reveal.js#dependencies
+
+			// More info https://github.com/hakimel/reveal.js#configuration
 			Reveal.initialize({
+				controls: true,
+				progress: true,
+				center: true,
+				hash: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
 				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true }
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true },
+					{ src: 'plugin/search/search.js', async: true },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
 				]
 			});
+
 		</script>
+
 	</body>
 </html>
