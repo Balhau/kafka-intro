@@ -49,7 +49,7 @@
 
 						Created by [Apache Kafka](https://github.com/apache/kafka)
 
-						[Vítor Fernandes](http://codecorner.balhau.net)
+						[Balhau](http://codecorner.balhau.net)
 					</textarea>
                 </section>
                 
@@ -652,136 +652,389 @@
 		<section>
 				<section data-markdown>
 					<textarea data-template>
-						## Administering Kafka
+						## Kafka Producers
 					</textarea>
 				</section>
+		</section>
+		<section>
 				<section data-markdown>
 					<textarea data-template>
-						### Topic Operations
+						## Kafka Consumers
 					</textarea>
 				</section>
+		</section>
+		<section>
 				<section data-markdown>
 					<textarea data-template>
-						Creating a topic
-						```
-						kafka-topics 
-							--create 
-							--zookeeper zoo1.example.com:2181/kafka-cluster
-							--topic my.topic 
-							--replication-factor 1 
-							--partitions 1 
-							--config "cleanup.policy=compaction" 
-							--config "delete.retention.ms=100"  
-							--config "segment.ms=100" 
-							--config "min.cleanable.dirty.ratio=0.01"
-						```
-
-						dirty ratio = the number of bytes in the head / total number of bytes in the log(tail + head)
+						## Kafka Internals
 					</textarea>
 				</section>
+		</section>
+		<section>
 				<section data-markdown>
 					<textarea data-template>
-						Deleting a topic
-						```
-						kafka-topics.sh 
-							--zookeeper zoo1.example.com:2181/kafka-cluster
-							--delete --topic my-topic
-						```
+						## Kafka Metrics
 					</textarea>
 				</section>
-				<section data-markdown>
-					<textarea data-template>
-						List topics
-						```
-						kafka-topics.sh 
-						--zookeeper zoo1.example.com:2181/kafka-cluster
-						--list
-						```	
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-						Describe topics
-						```
-						kafka-topics.sh --zookeeper zoo1.example.com:2181/kafka-cluster --describe
-						Topic:other-topic PartitionCount:8 ReplicationFactor:2 Configs: 
-						Topic:other-topic Partition: 0     Replicas: 1,0       Isr: 1,0
-						Topic:other-topic Partition: 1     Replicas: 0,1       Isr: 0,1
-						Topic:other-topic Partition: 2     Replicas: 1,0       Isr: 1,0
-						Topic:other-topic Partition: 3     Replicas: 0,1       Isr: 0,1
-						Topic:other-topic Partition: 4     Replicas: 1,0       Isr: 1,0
-						Topic:other-topic Partition: 5     Replicas: 0,1       Isr: 0,1
-						Topic:other-topic Partition: 6     Replicas: 1,0       Isr: 1,0
-						Topic:other-topic Partition: 7     Replicas: 0,1       Isr: 0,1
-						```	
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-						Describe topic partitions not in sync
-						```
-						kafka-topics.sh --zookeeper zoo1.example.com:2181/kafka-cluster
-						--describe 
-						--under-replicated-partitions
-
-						Topic: other-topic Partition: 2 Leader: 0 Replicas: 1,0 Isr: 0
-						Topic: other-topic Partition: 4 Leader: 0 Replicas: 1,0 Isr: 0
-						```
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-						### Consumer Groups
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-						List consumer groups
-						```
-						kafka-consumer-groups.sh 
-						--zookeeper zoo1.example.com:2181/kafka-cluster 
-						--list
-						
-						console-consumer-79697
-						myconsumer
-						```
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-					Describe consumer groups
-					```
-					kafka-consumer-groups.sh 
+		</section>
+		<section>
+		<section data-markdown>
+			<textarea data-template>
+				## Administering Kafka
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+				### Topic Operations
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+				Creating a topic
+				```
+				kafka-topics 
+					--create 
 					--zookeeper zoo1.example.com:2181/kafka-cluster
-					--describe --group testgroup
-					GROUP      TOPIC    PARTITION CURRENT-OFFSET LOG-END-OFFSET LAG OWNER
-					testgroup my-topic 0         1688           1688           0   testgroup_host1.example.com-1478188622741-7dab5ca7-0
-					testgroup my-topic 1         1418           1418           0   testgroup_host1.example.com-1478188622741-7dab5ca7-0
-					testgroup my-topic 2         1314           1315           1   testgroup_host1.example.com-1478188622741-7dab5ca7-0
-					testgroup my-topic 3         2012           2012           0   testgroup_host1.example.com-1478188622741-7dab5ca7-0
-					testgroup my-topic 4         1089           1089           0   testgroup_host1.example.com-1478188622741-7dab5ca7-0
-					testgroup my-topic 5         1429           1432           3   testgroup_host1.example.com-1478188622741-7dab5ca7-0
-					testgroup my-topic 6         1634           1634           0   testgroup_host1.example.com-1478188622741-7dab5ca7-0
-					testgroup my-topic 7         2261           2261           0   testgroup_host1.example.com-1478188622741-7dab5ca7-0
+					--topic my.topic 
+					--replication-factor 1 
+					--partitions 1 
+					--config "cleanup.policy=compaction" 
+					--config "delete.retention.ms=100"  
+					--config "segment.ms=100" 
+					--config "min.cleanable.dirty.ratio=0.01"
+				```
+
+				dirty ratio = the number of bytes in the head / total number of bytes in the log(tail + head)
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+				Deleting a topic
+				```
+				kafka-topics.sh 
+					--zookeeper zoo1.example.com:2181/kafka-cluster
+					--delete --topic my-topic
+				```
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+				List topics
+				```
+				kafka-topics.sh 
+				--zookeeper zoo1.example.com:2181/kafka-cluster
+				--list
+				```	
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+				Describe topics
+				```
+				kafka-topics.sh --zookeeper zoo1.example.com:2181/kafka-cluster --describe
+				Topic:other-topic PartitionCount:8 ReplicationFactor:2 Configs: 
+				Topic:other-topic Partition: 0     Replicas: 1,0       Isr: 1,0
+				Topic:other-topic Partition: 1     Replicas: 0,1       Isr: 0,1
+				Topic:other-topic Partition: 2     Replicas: 1,0       Isr: 1,0
+				Topic:other-topic Partition: 3     Replicas: 0,1       Isr: 0,1
+				Topic:other-topic Partition: 4     Replicas: 1,0       Isr: 1,0
+				Topic:other-topic Partition: 5     Replicas: 0,1       Isr: 0,1
+				Topic:other-topic Partition: 6     Replicas: 1,0       Isr: 1,0
+				Topic:other-topic Partition: 7     Replicas: 0,1       Isr: 0,1
+				```	
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+				Describe topic partitions not in sync
+				```
+				kafka-topics.sh --zookeeper zoo1.example.com:2181/kafka-cluster
+				--describe 
+				--under-replicated-partitions
+
+				Topic: other-topic Partition: 2 Leader: 0 Replicas: 1,0 Isr: 0
+				Topic: other-topic Partition: 4 Leader: 0 Replicas: 1,0 Isr: 0
+				```
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+				### Consumer Groups
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+				List consumer groups
+				* Old kafka clusters
+				```
+				kafka-consumer-groups.sh 
+				--zookeeper zoo1.example.com:2181/kafka-cluster 
+				--list
+				
+				console-consumer-79697
+				myconsumer
+				```
+
+				* New kafka clusters
+				```
+				./kafka-consumer-groups.sh 
+				--bootstrap-server localhost:9092 -list
+				```
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+			Describe consumer groups
+			```
+			kafka-consumer-groups.sh 
+			--zookeeper zoo1.example.com:2181/kafka-cluster
+			--describe --group testgroup
+			GROUP      TOPIC    PARTITION CURRENT-OFFSET LOG-END-OFFSET LAG OWNER
+			testgroup my-topic 0         1688           1688           0   testgroup_host1.example.com-1478188622741-7dab5ca7-0
+			testgroup my-topic 1         1418           1418           0   testgroup_host1.example.com-1478188622741-7dab5ca7-0
+			testgroup my-topic 2         1314           1315           1   testgroup_host1.example.com-1478188622741-7dab5ca7-0
+			testgroup my-topic 3         2012           2012           0   testgroup_host1.example.com-1478188622741-7dab5ca7-0
+			testgroup my-topic 4         1089           1089           0   testgroup_host1.example.com-1478188622741-7dab5ca7-0
+			testgroup my-topic 5         1429           1432           3   testgroup_host1.example.com-1478188622741-7dab5ca7-0
+			testgroup my-topic 6         1634           1634           0   testgroup_host1.example.com-1478188622741-7dab5ca7-0
+			testgroup my-topic 7         2261           2261           0   testgroup_host1.example.com-1478188622741-7dab5ca7-0
+			```
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+				* Delete consumer group
+				* If you don't provide the `--topic` argument it will delete the consumer group for
+				all the topics.
+
+				```
+				kafka-consumer-groups.sh 
+				--zookeeper zoo1.example.com:2181/kafka-cluster 
+				--delete 
+				--group testgroup
+				--topic my-topic
+				
+				Deleted all consumer group information for group testgroup topic
+				my-topic in zookeeper.
+
+				```
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+					### Offset management
+					#### Some old deprecated tools
+					* Export offsets for a consumer group
+
 					```
+					kafka-run-class.sh kafka.tools.ExportZkOffsets
+					--zkconnect zoo1.example.com:2181/kafka-cluster 
+					--group testgroup
+					--output-file offsets
+					```
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+					* Import offsets for a consumer group
+
+					```
+					kafka-run-class.sh kafka.tools.ImportZkOffsets 
+					--zkconnect zoo1.example.com:2181/kafka-cluster 
+					--input-file offsets
+					```
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+				### Dynamic topics configuration
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+				Changing topic retention
+				
+				
+					kafka-configs.sh 
+					--zookeeper zoo1.example.com:2181/kafka-cluster
+					--alter 
+					--entity-type topics 
+					--entity-name my-topic 
+					--add-config retention.ms=3600000
+				
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+				Describe topic configurations
+
+					./kafka-configs.sh 
+					--zookeeper localhost:2181/localkafka 
+					--describe 
+					--entity-type topics 
+					--entity-name powers.stream.fip
+					
+					Configs for topics:my-topic are
+					retention.ms=3600000,segment.ms=3600000
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+				Remove topic configuration
+				
+					kafka-configs.sh 
+					--zookeeper zoo1.example.com:2181/kafka-cluster
+					--alter 
+					--entity-type topics 
+					--entity-name my-topic
+					--delete-config retention.ms
+					
+					Updated config for topic: "my-topic"
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+				### Partition Management
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+					
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+					
+			</textarea>
+		</section>
+		<section data-markdown>
+			<textarea data-template>
+					
+			</textarea>
+		</section>
+	</section>
+	<section>
+				<section data-markdown>
+					<textarea data-template>
+						## Kafka Tinkering	
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
-						Delete consumer group
-						```
-						kafka-consumer-groups.sh 
-						--zookeeper zoo1.example.com:2181/kafka-cluster 
-						--delete 
-						--group testgroup
-						--topic my-topic
+						### Prepare your environment
+						You can tinker with kafka by doing one of the following
+						* Download Kafka and manually start kafka and zookeeper (this is actually a nice exercise)
+						* Or you can run the containers that were provided 
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### The manual approach
+						* Download kafka from [here](http://mirrors.up.pt/pub/apache/kafka/2.2.1/kafka_2.12-2.2.1.tgz)
+						* Run 
 						
-						Deleted all consumer group information for group testgroup topic
-						my-topic in zookeeper.
+						```
+						wget http://mirrors.up.pt/pub/apache/kafka/2.2.1/kafka_2.12-2.2.1.tgz 
+						&& tar -xvf kafka_2.12-2.2.1.tgz
+						
+						```
+						
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### The manual approach
+						* Now you need to go into kafka directory and run the following two commands in sequence
+						```
+							./bin/zookeeper-server-start.sh config/zookeeper.properties
+							./bin/kafka-server-start.sh config/server.properties
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### The container based approach
+
+						* We can also follow a container based approach in which the setup is already
+						done in [Dockerfiles](https://docs.docker.com/engine/reference/builder/)
+
+						* The first thing you need to do is to clone the provided git repo
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### First build the images
+						* First run the following to build the images
+						```
+						cd centos && make build && cd ..
+						cd java && make build && cd ..
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+							* With the second base image you are able to build your kafka containers
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+							* To easily bootstrap dev environments we use
+							[docker-compose](https://docs.docker.com/compose/reference/build/) and their DSL
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						Bootstrap kafka environment with `docker-compose`
+						```
+						docker-compose -f compose/kafka-env.yml build
+						docker-compose -f compose/kafka-env.yml up
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						* Now list your docker images with `docker images`
+						```
+						REPOSITORY          TAG                 IMAGE ID            CREATED      
+						compose_cassandra   latest              c242778cee7e        3 minutes ago
+						compose_kafka       latest              3d4686884967        4 minutes ago
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						* You also have your container running, check this by running
+						`docker ps`
+						```
+						CONTAINER ID        IMAGE               COMMAND                  CREATED
+						219b05b407a2        compose_kafka       "/bin/sh -c /opt/sta…"   5 seconds ago
+						1593ff61df27        compose_cassandra   "/opt/start-cassandr…"   5 seconds ago
+						```
+					</textarea>
+				</section>
+
+				<section data-markdown>
+					<textarea data-template>
+						* Access your containers with
+						```
+						docker exec -it <containerId> <shell>
+						docker exec -it 219b05b407a2 bash
 						```
 
-						If you don't provide the `--topic` argument it will delete the consumer group for
-						all the topics.
+						* For [alpine](https://hub.docker.com/_/alpine) based containers you would replace `bash` with `ash`
+					</textarea>
+				</section>
+
+				<section data-markdown>
+					<textarea data-template>
+						#### Manual vs Docker based approach
+
+						* Manual approach is simpler, straightforward. 
+						* Manual approach is not reproductible
+						* Manual approach is harder to build different combinations tech stacks
+						* Local Cluster setup can be automated in docker and docker compose
+						scripts and then shared among people
+
 					</textarea>
 				</section>
 				<section data-markdown>
@@ -791,53 +1044,12 @@
 				</section>
 				<section data-markdown>
 					<textarea data-template>
-							
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-							
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-							
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-							
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-							
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-							
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-							
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-							
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-							
+						
 					</textarea>
 				</section>
 			</section>
-			</div>
-
 		</div>
+	</div>
 
 		<script src="js/reveal.js"></script>
 
