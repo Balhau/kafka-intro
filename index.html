@@ -1244,14 +1244,249 @@ when explicitly requesting metadata via *partitionsFor()*
 				</section>
 				<section data-markdown>
 					<textarea data-template>
+						#### Reprocessing of messages
+						![Reprocessing of Messages](img/reprocessmessages.png)
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Loss of messages
+						![Loss of messages](img/lossmessage.png)
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Automatic Commit
+
+						* This will be done periodically with the highest value returned by *pool*
+						call.
+							* The period of submission is defined by the parameter *auto.commit.interval.ms*
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Manual sync commit
+
+						* Disable the automatic commit of offsets by setting the *auto.commit.offset* 
+						to *false*
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						```
+							ConsumerRecords<String, String> records = consumer.poll(100);
+							for (ConsumerRecord<String, String> record : records){
+								System.out.printf("
+								topic = %s, 
+								partition = %s, 
+								offset =
+								%d, customer = %s, 
+								country = %s\n",
+							record.topic(), 
+							record.partition(),
+							record.offset(), 
+							record.key(), 
+							record.value());
+							}
+							try {
+								consumer.commitSync();
+							} catch (CommitFailedException e) {
+								log.error("commit failed", e)
+							}
+						```
 					</textarea>
 				</section>
 				<section data-markdown>
 						<textarea data-template>
+							#### Manual Async commit
+
+							```
+							consumer.commitAsync();
+							```
 						</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
+						##### Manual Async Commit with callback
+						```
+						consumer.commitAsync(new OffsetCommitCallback() {
+							public void onComplete(
+								Map<TopicPartition,
+								OffsetAndMetadata> offsets, 
+								Exception exception
+							) {
+								if (e != null)
+									log.error("Commit failed for offsets {}", offsets, e);
+								}
+							});
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						##### Combine Sync/Async Pattern
+						```
+						try {
+							while (true) {
+								ConsumerRecords<String, String> records = consumer.poll(100);
+								for (ConsumerRecord<String, String> record : records) {
+									System.out.printf("topic = %s, partition = %s, offset = %d,
+									customer = %s, country = %s\n",
+									record.topic(), record.partition(),
+									record.offset(), record.key(), record.value());
+								}
+								consumer.commitAsync();
+							}
+							} catch (Exception e) {
+								log.error("Unexpected error", e);
+							} finally {
+								try {
+									consumer.commitSync();
+								} finally {
+									consumer.close();
+								}
+							}
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						##### Custom offset commit
+						```
+						while (true) {
+							ConsumerRecords<String, String> records = consumer.poll(100);
+							for (ConsumerRecord<String, String> record : records)
+							{
+								System.out.printf("
+									topic = %s,
+									partition = %s, 
+									offset = %d,
+									customer = %s, 
+									country = %s\n",
+									record.topic(), 
+									record.partition(), 
+									record.offset(),
+									record.key(), 
+									record.value()
+								);
+								
+								currentOffsets.put(
+									new TopicPartition(record.topic(),record.partition()), 
+									new OffsetAndMetadata(record.offset()+1, "no metadata")
+								);
+
+
+								if (count % 1000 == 0)
+									consumer.commitAsync(currentOffsets, null);
+								count++;
+							}
+						}
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Rebalance Listeners
+
+						* Usefull to implement cleanup routines when an event of partition rebalancing
+						happens
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### The contract
+						* Is defined in the *ConsumerRebalanceListener* and has two major callbacks
+
+						```
+						public void onPartitionsRevoked(Collection<TopicPartition> partitions)
+						public void onPartitionsAssigned(Collection<TopicPartition> partitions)
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Implementation example
+						```
+						class HandleRebalance implements ConsumerRebalanceListener {
+							public void onPartitionsAssigned(
+								Collection<TopicPartition>partitions
+							) {}
+							
+							public void onPartitionsRevoked(
+								Collection<TopicPartition> partitions
+							) {
+								System.out.println("Lost partitions in rebalance.
+								Committing current
+								offsets:" + currentOffsets);
+								consumer.commitSync(currentOffsets);
+							}
+						}
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Use our rebalance listener
+
+						```
+						consumer.subscribe(topics, new HandleRebalance());
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Consuming records with specific offsets
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Implement the rebalance listener
+						```
+						public class SaveOffsetsOnRebalance implements ConsumerRebalanceListener {
+							public void onPartitionsRevoked(Collection<TopicPartition>
+							partitions) {
+								commitDBTransaction();
+							}
+							public void onPartitionsAssigned(Collection<TopicPartition>
+							partitions) {
+								for(TopicPartition partition: partitions)
+									consumer.seek(partition, getOffsetFromDB(partition));
+							}
+						}
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Set the rebalance in the consumer subscription
+						```
+						consumer.subscribe(
+							topics, 
+							new SaveOffsetOnRebalance(consumer)
+						);
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Set offsets and consumer loop
+						```
+						consumer.poll(0);
+						for (TopicPartition partition: consumer.assignment())
+						consumer.seek(partition, getOffsetFromDB(partition));
+						while (true) {
+							ConsumerRecords<String, String> records =
+							consumer.poll(100);
+							for (ConsumerRecord<String, String> record : records)
+							{	
+								processRecord(record);
+								storeRecordInDB(record);
+								storeOffsetInDB(record.topic(), record.partition(),
+								record.offset());
+							}
+							commitDBTransaction();
+						}
+						```
 					</textarea>
 				</section>
 				<section data-markdown>
@@ -1263,8 +1498,12 @@ when explicitly requesting metadata via *partitionsFor()*
 					</textarea>
 				</section>
 				<section data-markdown>
-						<textarea data-template>
-						</textarea>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
