@@ -899,19 +899,277 @@
 		</section>
 		<section data-markdown>
 			<textarea data-template>
-					
+					#### Rebalance partition leadership
+
+					* Globalwide topic balance leadership
+
+							kafka-preferred-replica-election.sh 
+							--zookeeper zoo1.example.com:2181/kafka-cluster
+							
+							Successfully started preferred replica election for partitions
+							Set([my-topic,5], [my-topic,0], [my-topic,7], 
+							[my-topic,4],[my-topic,6], [my-topic,2], 
+							[my-topic,3], [my-topic,1])
 			</textarea>
 		</section>
 		<section data-markdown>
 			<textarea data-template>
+					* For large clusters this command is not possible due a 1MB zookeeper request limit
+					* You need to break down into several elections based on files
 					
+						{
+							"partitions":
+							[
+							{"topic": "topic1", "partition": 0},
+							{"topic": "topic1", "partition": 1},
+							{"topic": "topic1", "partition": 2},
+							{"topic": "topic2", "partition": 0},
+							{"topic": "topic2", "partition": 1}
+							]
+						}
 			</textarea>
 		</section>
-		<section data-markdown>
-			<textarea data-template>
+			<section data-markdown>
+				<textarea data-template>
+						#### The `kafka auto.leader.rebalance.enable` flag
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					* If possible this flag should be true to avoid manual intervention on the cluster
+					* There are significant performance impacts caused by the automatic balancing module, and it can cause a lengthy pause in client traffic for larger
+					clusters.
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Reassign partition replicas
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					* First create a `json` file containing the topics for which you want the replicas reassigned
+
+						```
+						{
+							"topics": [
+								{
+									"topic": "my-topic"
+								}
+							],
+							"version": 1
+						}
+						```
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					* Then run the following command to generate a new assignment purposal
+
+							kafka-reassign-partitions.sh 
+							--zookeeper zoo1.example.com:2181/kafka-cluster 
+							--generate
+							--topics-to-move-json-file topics.json 
+							--broker-list 0,1
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					* The previous command will generate a json output with a proposal of reasignment.
+					* Use this proposal to reassign the replicas
+
+							kafka-reassign-partitions.sh 
+							--zookeeper zoo1.example.com:2181/kafka-cluster 
+							--generate --topics-to-move-json-file topics.json 
+							--broker-list 0,1
+
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Note
 					
-			</textarea>
-		</section>
+					* When removing many partitions from a single broker, such as if
+that broker is being removed from the cluster, it is a best practice:
+						* To shut down and restart the broker before starting the reassignment.				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+
+					#### Why?
+
+					* This will move leadership for the partitions on that particular
+					broker to other brokers in the cluster (as long as automatic leader
+					elections are not enabled). This can significantly increase the per‐
+					formance of reassignments and reduce the impact on the cluster as
+					the replication traffic will be distributed to many brokers.
+						
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Changing replication factor
+					* Consider the following topic
+					
+							{
+								"partitions": [
+									{
+									"topic": "my-topic",
+									"partition": 0,
+									"replicas": [1]
+									}
+								],
+								"version": 1
+							}
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					* By changing the previous json file into
+					
+						{
+							"partitions": [
+								{
+									"partition": 0,
+									"replicas": [1,2],
+									"topic": "my-topic"
+								}
+							],
+							"version": 1
+						}
+
+					* You'll be able to increase the replication factor of a topic
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+						* Note that this is an undocumented functionality of the tool and may be deprecated in the future
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Console Producer
+
+					* Enable you to quickly test the producition to a topic
+
+					```
+					kafka-console-producer.sh 
+						--broker-list <kafka1,kafka2:<port>> 
+						--topic <topic>
+					```
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Console consumer
+					
+					* Enable you to quickly consume from a kafka topic
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					##### Old way
+
+					```
+					kafka-console-consumer.sh 
+					--zookeeper <zookeeper:port/path> 
+					--topic my-topic
+					```
+
+					* If you want to consume from the beginning you need to add another parameter 
+					
+					```
+					kafka-console-consumer.sh 
+					--zookeeper <zookeeper:port/path> 
+					--topic my-topic
+					--from-beginning
+					```
+
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### New way
+
+					```
+					kafka-console-consumer.sh 
+					--bootstrap-server <kafka:port> 
+					--topic my-topic
+					```
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Analyse log segments
+
+					* Print the log in human readeable form
+						
+						```
+						kafka-run-class.sh 
+						kafka.tools.DumpLogSegments 
+							--files <logfile.log>
+						```
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					* If you also want the data inside the log 
+					
+					```
+					kafka-run-class.sh 
+					kafka.tools.DumpLogSegments 
+						--files <logfile.log>
+						--print-data-log
+					```
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					* To validate the log is not corrupted
+
+					```
+					kafka-run-class.sh 
+					kafka.tools.DumpLogSegments 
+						--files <indexfile.index>,<logfile.log>
+						--index-sanity-check
+					```
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					#### Replica verification
+					
+					```
+					kafka-replica-verification.sh 
+					--broker-list <kafka1,kafka2:port>
+					--topic-white-list '<topic_regex>'
+					```
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+				</textarea>
+			</section>
 	</section>
 	<section>
 				<section data-markdown>
