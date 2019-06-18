@@ -655,6 +655,324 @@
 						## Kafka Producers
 					</textarea>
 				</section>
+				<section data-markdown>
+					<textarea data-template>
+						<img src="img/prodoverview.png" alt="Producers Overview" width="60%"/>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Setting up a Kafka Producer
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Configurations needed
+
+						* bootstrap-servers - List of kafka brokers
+						* key.serializer - Class responsible for *key* serialization
+						* value.serializer -  Class responsible for *payload* serialization
+
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Java example
+						```
+						Properties kafkaProps = new Properties();
+
+						kafkaProps.put(
+							"bootstrap.servers", 
+							"broker1:9092,broker2:9092"
+						);
+						kafkaProps.put(
+							"key.serializer",
+							"org.apache.kafka.common.serialization.StringSerializer"
+						);
+						kafkaProps.put(
+							"value.serializer",
+							"org.apache.kafka.common.serialization.StringSerializer"
+						);
+
+						KafkaProducer producer = new KafkaProducer<String, String>(kafkaProps);
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Publishing strategies
+
+						* Fire and Forget
+						* Synchronous send
+						* Asynchronous send
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						##### Fire and forget
+						```
+						ProducerRecord<String, String> record = new ProducerRecord<>(
+							"CustomerCountry", "Precision Products", "France"
+						);
+						try {
+							producer.send(record);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						##### Synchronous send
+						```
+						ProducerRecord<String, String> record = new ProducerRecord<>(
+							"CustomerCountry", "Precision Products", "France"
+						);
+						try {
+							producer.send(record).get();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						##### Async send
+
+						* You define a callback to handle the message result
+
+						```
+						private class DemoProducerCallback implements Callback {
+							@Override
+							public void onCompletion(
+								RecordMetadata recordMetadata, 
+								Exception e
+							){
+								if (e != null) {
+									e.printStackTrace();
+								}
+							}
+						}
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						* And set this callback in the *send* method
+						```
+						ProducerRecord<String, String> record = new ProducerRecord<>(
+							"CustomerCountry", "Precision Products", "France"
+						);
+						try {
+							producer.send(record,new DemoProducerCallback());
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Producers configurations
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### acks
+
+						* acks = 0 -- Producer will not wait for broker reply
+						* acks = 1 -- Producer will receive notification as soon as leader replica acknowledge
+						the message
+						* acks = all --Producer will receive notification as soon as all in-sync replicas
+						receive the message
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Acks trade-off
+
+						* The less you care for broker responses the higher the risk for loss of messages
+						* The less you care for broker responses the higher the throughput of your system
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						##### Buffer memory (buffer.memory)
+
+						* Buffer used by the producer. 
+						* If the buffer is filled and no more messages are possible to hold an exception is
+						thrown.
+						* Filling of buffer usually means broker not being able to keep up with production rate
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						##### Compression Type (compression.type)
+						
+						* By default messages are uncompressed
+						* This parameter can be set to:
+							* [Snappy](https://en.wikipedia.org/wiki/Snappy_(compression))
+							* [LZ4](https://en.wikipedia.org/wiki/LZ4_(compression_algorithm))
+							* [Gzip](https://en.wikipedia.org/wiki/Gzip)
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Retries 
+						
+						* Number of retries the producer will atempt before throwing an exception
+						* Producer will hold 100ms by default between atempts
+							* This can be overrided with *retry.backoff.ms* parameter
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Batch Size (batch.size)
+
+						* For performance reasons the produces batch the messages to be send 
+						to a specific partition
+						* This parameter specifies the size of this buffer in bytes (not in messages)
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Linger Millisseconds (linger.ms)
+
+						* Latency is a concern. We need a way to guarantee that messages are sent even
+						if the batch buffer is not completly filled
+						* *linger.ms* is the time in millisseconds that the producer will wait
+						for batch buffer completion.
+						* After this time the messages on the batch are sent anyway.
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Client ID (client.id)
+
+						* *client.id* is just a tag sent by the producer for the brokers be able
+						to identify the client
+							* Used for logging, metrics and quotas
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Max Inflight Requests/Connection (max.in.flight.requests.per.connection)
+
+						* This controls the maximum number of pending requests in flight
+							* Increasing this will increase throughput while increasing also memory footprint
+							* Setting to 1 will guarantee that messages will be sent to kafka in order
+							while sacrificing throughput
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Timeouts
+
+						* *timeout.ms* -- Controls the time the broker will wait for in-sync replicas to acknowledge the message
+						in order to meet the acks configuration—the broker will return an error if the time
+						elapses without the necessary acknowledgments.
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						* *request.timeout.ms* -- Controls how long the producer will wait for a reply from the server
+						when sending data.
+						* *metadata.fetch.timeout.ms* -- Controls how long will wait while requesting 
+						metadata such as the current leaders for the partitions.
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Max Block Millisseconds (max.block.ms)
+
+						* Controls how long the producer will block when calling *send()* and
+when explicitly requesting metadata via *partitionsFor()*
+						* When this timeout is reached an exception is thrown
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Max Request Size (max.request.size)
+
+						* This parameter sets the maximum size of a produce request
+							* Note that most broker configuration will not accept messages with payload 
+							higher than 1MB (*message.max.bytes*)
+						
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Receive/Send Buffer bytes (receive.buffer.bytes/send.buffer.bytes)
+
+						* By default they are set with -1 which means use the default OS 
+						configurations
+							* We should review this parameter and increase it when publishing/consuming from/to
+							different datacenters
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Serialize with Avro
+						![Avro Schema](img/avroschema.png)
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+							```
+							Properties props = new Properties();
+							props.put("bootstrap.servers", "localhost:9092");
+							props.put(
+								"key.serializer",
+								"io.confluent.kafka.serializers.KafkaAvroSerializer"
+							);
+							props.put(
+								"value.serializer",
+								"io.confluent.kafka.serializers.KafkaAvroSerializer"
+							);
+							
+							props.put("schema.registry.url", schemaUrl);
+							String topic = "customerContacts";
+							int wait = 500;
+							Producer<String, Customer> producer = new KafkaProducer<String,
+	Customer>(props);
+							while (true) {
+								Customer customer = CustomerGenerator.getNext();
+								System.out.println("Generated customer " +
+								customer.toString());
+								ProducerRecord<String, Customer> record =
+									new ProducerRecord<>(
+										topic, customer.getId(), 
+										customer
+								);
+								producer.send(record);
+								```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Other payloads options
+
+						* [JSON](https://www.json.org/)
+						* [Protocol Buffers](https://developers.google.com/protocol-buffers/)
+						* [Thrift Protocol](https://thrift.apache.org/)
+
+						* For more analysis on pros and cons of these different protocols you can check 
+						[chapter 4 of DDIA](https://dataintensive.net/)
+
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+
+
 		</section>
 		<section>
 				<section data-markdown>
@@ -1096,22 +1414,6 @@ that broker is being removed from the cluster, it is a best practice:
 					--bootstrap-server <kafka:port> 
 					--topic my-topic
 					```
-				</textarea>
-			</section>
-			<section data-markdown>
-				<textarea data-template>
-				</textarea>
-			</section>
-			<section data-markdown>
-				<textarea data-template>
-				</textarea>
-			</section>
-			<section data-markdown>
-				<textarea data-template>
-				</textarea>
-			</section>
-			<section data-markdown>
-				<textarea data-template>
 				</textarea>
 			</section>
 			<section data-markdown>
