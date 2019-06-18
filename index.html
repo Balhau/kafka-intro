@@ -838,11 +838,11 @@
 				</section>
 				<section data-markdown>
 					<textarea data-template>
-						#### Linger Millisseconds (linger.ms)
+						#### Linger milliseconds (linger.ms)
 
 						* Latency is a concern. We need a way to guarantee that messages are sent even
 						if the batch buffer is not completly filled
-						* *linger.ms* is the time in millisseconds that the producer will wait
+						* *linger.ms* is the time in milliseconds that the producer will wait
 						for batch buffer completion.
 						* After this time the messages on the batch are sent anyway.
 					</textarea>
@@ -885,7 +885,7 @@
 				</section>
 				<section data-markdown>
 					<textarea data-template>
-						#### Max Block Millisseconds (max.block.ms)
+						#### Max Block milliseconds (max.block.ms)
 
 						* Controls how long the producer will block when calling *send()* and
 when explicitly requesting metadata via *partitionsFor()*
@@ -963,21 +963,315 @@ when explicitly requesting metadata via *partitionsFor()*
 
 					</textarea>
 				</section>
-				<section data-markdown>
-					<textarea data-template>
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-					</textarea>
-				</section>
-
-
-		</section>
+			</section>
 		<section>
 				<section data-markdown>
 					<textarea data-template>
 						## Kafka Consumers
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						![Single consumer](img/consumer1.png)
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+							![Single consumer](img/consumer2.png)
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+							![Single consumer](img/consumer3.png)
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+							![Single consumer](img/consumer4.png)
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+							<img src="img/consumer5.png" width="60%"/>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Same Consumer Group
+
+						* The same consumer group enable easy implementation of:
+							* Load balancing
+							* Failover mechanisms
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Different Consumer Group
+
+						* Different consumer groups enables:
+							* Independent consumption from different applications
+							* This leads to better scalling capabilities.
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### A simple java consumer
+
+						```
+						Properties props = new Properties();
+						props.put("bootstrap.servers", "broker1:9092,broker2:9092");
+						props.put("group.id", "CountryCounter");
+						
+						props.put(
+							"key.deserializer",
+							"org.apache.kafka.common.serialization.StringDeserializer"
+						);
+						props.put(
+							"value.deserializer",
+							"org.apache.kafka.common.serialization.StringDeserializer"
+						);
+						
+						KafkaConsumer<String, String> consumer = new KafkaConsumer<String,
+						String>(props);
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Subscribing a topic
+						```
+						consumer.subscribe(
+							Collections.singletonList(
+								"customerCountries"
+							)
+						);
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Subscribing by pattern
+						```
+						consumer.subscribe(
+							Collections.singletonList(
+								"topic.type.*"
+							)
+						);
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### The consumer loop
+						```
+						try {
+							while (true) {
+								ConsumerRecords<String, String> records = consumer.poll(100);
+								for (ConsumerRecord<String, String> record : records)
+								{
+									log.debug("
+										topic = %s, 
+										partition = %s, 
+										offset = %d,
+										customer = %s, 
+										country = %s\n",
+										record.topic(), 
+										record.partition(), 
+										record.offset(),
+										record.key(), 
+										record.value()
+									);
+									
+									int updatedCount = 1;
+									
+									if (custCountryMap.countainsValue(record.value())) {
+										updatedCount = custCountryMap.get(record.value()) + 1;
+									}
+								
+									custCountryMap.put(record.value(), updatedCount)
+									JSONObject json = new JSONObject(custCountryMap);
+									System.out.println(json.toString(4))
+								}
+							}
+						} finally {
+							consumer.close();
+						}
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Notes on thread safety
+						
+						* You can’t have multiple consumers that belong to the same group
+						in one thread.
+						* You can’t have multiple threads safely use the same consumer.
+						* One consumer per thread is the rule.
+						* To run multiple consumers in the same group in one application, you will
+						need to run each in its own thread.
+						* See more details in [this confluent tutorial](https://www.confluent.io/blog/tutorial-getting-started-with-the-new-apache-kafka-0-9-consumer-client/)
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Main consumer configurations
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Fetch minimum bytes (fetch.min.bytes)
+
+						* This will specify the buffer in bytes that will be allocated to fetch records
+						* This will impact the amount of data we will be able to fetch on each `pool()`
+						call
+						* Higher values will reduce the amount of pool calls because less *forth and back* 
+						communication is needed
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Fetch maximum wait (fetch.max.wait.ms)
+
+						* This parameter sets the maximum amount of time (in milliseconds) that
+						the request call can be blocked.
+						* If the minimum bytes is not reached the data batched is returned anyway
+						*
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Max partition fetch bytes (max.partition.fetch.bytes)
+
+						* This controls the ammount of data sent by the broker on each partition
+						* The default is 1MB
+							* This means that if you got 20 partitions you'll need 20Mb of memory
+						* This parameter must be set accordingly with the broker parameter *max.message.size*
+							* Otherwise you can endup in a failure loop because you'll be not able to consume a message
+							and will stuck in error
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Session Timeout milliseconds (session.timeout.ms)
+
+						* This parameter sets the maximum time that the consumer can be without comunication with
+						the coordinator.
+							* If the timeout is reached the coordinator will launch a rebalance to allocate partitions
+							from this (now considered dead) consumer to other consumers in the group
+						* The parameter *heartbeat.interval.ms* defines the interval of heartbeats from the consumer
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Auto offset reset (auto.offset.reset)
+
+						* When no offset (or invalid) is found on the *__consumers* topic a
+						default policy is applied
+							* *earliest* -- If set with this value it will start consuming from the beginning
+							* *latest*   -- If set with this value it will start consuming from the most recent
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Auto commit (enable.auto.commit)
+
+						* This is a boolean parameter that will enable/disable the automatic submition of 
+						consumed offsets from the consumer
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Partition Assignment Strategy (partition.assignment.strategy)
+
+						* This parameter holds the name of the class that will be responsible to
+						define the way partitions are assigned to consumers
+						* There are two default implementations:
+							* Range 
+							* RoundRobin
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						##### Range Partition Assignment Strategy
+						* Assigns to each consumer a consecutive subset of partitions
+						 from each topic it subscribes to:
+						 	* If consumers C1 and C2 are subscribed to two topics, T1 and
+							 T2, and each of the topics has three partitions, then C1 will be assigned partitions
+							 0 and 1 from topics T1 and T2, while C2 will be assigned partition 2 from those
+							 topics
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						##### RoundRobin Partition Assignment Strategy
+						
+						* Takes all the partitions from all subscribed topics and assigns them to consumers
+						sequentially, one by one.
+							* If C1 and C2 described previously used RoundRobin assignment, 
+							C1 would have partitions 0 and 2 from topic T1 and partition 1 from
+							topic T2. C2 would have partition 1 from topic T1 and partitions 0 and 2 from
+							topic T2
+							
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Client ID (client.id)
+						
+						* The same purpose of the *client.id* parameter in the producer 
+						configuration
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Maximum pool records (max.poll.records)
+
+						* Will define the maximum amount of *ConsumerRecords* returned by *pool* call.
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Commits and offsets
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Can lead to
+
+						* Reprocessing of messages
+						* Loss of messages
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+						<textarea data-template>
+						</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+						<textarea data-template>
+						</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
 					</textarea>
 				</section>
 		</section>
