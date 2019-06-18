@@ -1694,18 +1694,37 @@ when explicitly requesting metadata via *partitionsFor()*
 				</section>
 				<section data-markdown>
 					<textarea data-template>
+						### File Management
+						
+						* The data of a *partition replica* lives inside a *log* file and they are
+						divided into *segments*.
+						* They rotate based on topic configurations
+						* Rotated segments are deleted or compacted based on topic policy 
+						* The segment that is being used for write operations is called *active segment*
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
+						### File format
+						
+						* The file format is very close with the in memory representation.
+							* This enables a *zero-copy* strategy when sending data to consumers
+							* Avoid recompression of already compressed data from the producer
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
+						![Log file format](img/messageinlog.png)
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
+						### Index File
+
+						* Kafka needs to quickly retrieve position of message based on the offset
+						* Kafka has an index file per partition which
+							* Maps the offset to the segment and position within the file
+							where the message holds
 					</textarea>
 				</section>
 				<section data-markdown>
