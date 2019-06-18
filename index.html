@@ -1489,35 +1489,148 @@ when explicitly requesting metadata via *partitionsFor()*
 						```
 					</textarea>
 				</section>
-				<section data-markdown>
-					<textarea data-template>
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
-					</textarea>
-				</section>
 		</section>
 		<section>
 				<section data-markdown>
 					<textarea data-template>
 						## Kafka Internals
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Cluster membership
+
+						* The cluster information can be checked in zookeeper
+
+						```
+						ls /<kafka_root>/brokers/ids
+						[0]
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						* To get information regarding the broker [0], do a *znode get*
+						```
+						get /<kafka_root>/brokers/ids/0
+								{
+									"listener_security_protocol_map":{
+										"PLAINTEXT":"PLAINTEXT"
+									},"endpoints":["PLAINTEXT://localhost:9092"],
+									"jmx_port":-1,
+									"host":"localhost",
+									"timestamp":"1560882654942",
+									"port":9092,
+									"version":4
+								}
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Getting the Controller Node
+
+						```
+						get /<kafka_root>/controller
+						{"version":1,"brokerid":0,"timestamp":"1560882655203"}
+						```
+
+
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Replication
+						
+						* Kafka partitions are represented physically in terms of replicas
+						* There are two types of replicas
+							* Leader replica
+							* Follower replica
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						* Follower replicas issue fetch requests
+						* Leader replica keep track of the fech requests from each replica
+						and validate which of them are in-sync based on the property *replica.lag.time.max.ms*
+							* If a follower replica don't send a fetch request in the timeout defined by the 
+							previous parameter is considered *out of sync*
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						* We also have the *prefered leader* 
+							* which consists of the leader replica at topic creation time 
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Why this matters?
+
+						* By default, Kafka is with *auto.leader.rebalance.enable=true*, 
+						which will check if the preferred leader replica is not the current leader but is in-sync 
+						and trigger leader election to make the preferred leader the current leader.
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Requests Processing
+
+						Kafka has an internal binary protocol to handle the requests between brokers
+						it is [described here](http://kafka.apache.org/protocol.html)
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						* All requests have the following standard headers
+							* *Request type* (also called API key)
+							* *Request version* (so the brokers can handle clients of different versions and
+							respond accordingly)
+							* *Correlation ID* a number that uniquely identifies the request and also appears in
+							the response and in the error logs (the ID is used for troubleshooting)
+							* *Client ID* used to identify the application that sent the request
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Requests processor arquitecture
+						![Requests Processor](img/requestsprocessor.png)
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Processor Queues
+
+						* The requests processor has two processor queues
+							* One for *Fetch Requests* sent by consumers and follower replicas when they read 
+							messages from Kafka brokers.
+							* One for *Produce Requests* sent by producers and contain messages the clients write to Kafka brokers.
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Client routing requests
+						![Client Routing Requests](img/clientroutingrequests.png)
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						* Clients issue *Metadata Requests* to retrieve meta information from the cluster
+							* Like which is the leader for the partition *A* of topic *B*
+						* These *Metadata Requests* are cached by the clients based on a configuration 
+						parameter *metadata.max.age.ms*
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
 					</textarea>
 				</section>
 		</section>
