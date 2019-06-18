@@ -1623,6 +1623,101 @@ when explicitly requesting metadata via *partitionsFor()*
 				</section>
 				<section data-markdown>
 					<textarea data-template>
+						##### Producer/Broker/Consumer Diagram
+						![Producer Broker Consumer](img/producerbrokerconsumer.png)
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						##### Consumer messages availability
+						![Messages available](img/consumermessages.png)
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Other Kafka Protocol Messages
+
+						* The kafka protocol supports around 20 other message types, namely:
+							* OffsetCommitRequest
+								* Introduced to support consumer offsets management in kafka
+								instead of zookeeper
+							* OffsetFetchRequest
+							* ListOffsetsRequest 
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Physical storage
+
+						* Where are the log files stored?
+							* In the path defined by the configuration parameter *log.dirs*
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Partition Allocation
+
+						* Supose you got a cluster of 3 brokers
+						* Supose you got a topic with 10 partitions and replication factor of 3
+							* This means a total of 30 partition replicas need to be stored
+
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						##### Goals to achieve
+
+						* Distribute evenly the replicas across the brokers.
+							* In this case we would like to have 10 replicas per broker
+						* Avoid replicas for the same partition on the same broker
+							* The means that for all the 10 replicas on the broker they 
+							relate to non repeated partitions
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						* If the brokers have rack information, then assign the replicas for 
+						each partition to different racks if possible.
+							* Available in Kafka release 0.10.0 and higher
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						![Rack Distribution](img/rackbrokers.png)
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						* Here in PPB we can achieve the same by building our 
+						pipeline in a way that our brokers would end up on different hypervisors
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
 					</textarea>
 				</section>
 				<section data-markdown>
