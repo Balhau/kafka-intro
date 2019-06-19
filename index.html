@@ -1754,6 +1754,146 @@ when explicitly requesting metadata via *partitionsFor()*
 						## Kafka Metrics
 					</textarea>
 				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### JMX Metrics
+						
+						* Kafka has application level JMX exposed metrics
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Under replicated partitions
+						```
+							MX MBean: 
+							kafka.server:type=ReplicaManager,name=UnderReplicatedPartitions
+							
+							Value range: 
+							Integer, zero or greater
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						* This measurement, provided on each broker in a cluster, 
+						gives a count of the number of partitions for which the
+						broker is the leader replica, where the follower replicas are not caught up.
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						```
+							kafka-topics.sh --zookeeper zoo1.example.com:2181/kafka-cluster --describe
+							--under-replicated
+							Topic: topicOne Partition: 5 Leader: 1 Replicas: 1,2 Isr: 1 
+							Topic: topicOne Partition: 6 Leader: 3 Replicas: 2,3 Isr: 3
+							Topic: topicTwo Partition: 3 Leader: 4 Replicas: 2,4 Isr: 4
+							Topic: topicTwo Partition: 7 Leader: 5 Replicas: 5,2 Isr: 5
+							Topic: topicSix Partition: 1 Leader: 3 Replicas: 2,3 Isr: 3
+							Topic: topicSix Partition: 2 Leader: 1 Replicas: 1,2 Isr: 1
+							Topic: topicSix Partition: 5 Leader: 6 Replicas: 2,6 Isr: 6
+							Topic: topicSix Partition: 7 Leader: 7 Replicas: 7,2 Isr: 7
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						* The previous command shows consistently that the broker with id 2 is with problems
+						keeping up in sync with the rest of the cluster. 
+						* A more in depth analysis should be done on this broker
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Active controller count
+						
+						```
+						JMX MBean:
+						kafka.controller:type=KafkaController,name=ActiveControllerCount
+						
+						Value range:
+						Zero or one
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						* This metric is a *boolean* value representing if the broker is currently
+						the controller of the cluster
+							* The cluster should have just one value with 1
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Request Handler idle ratio
+
+						* Kafka has two thread pools to process clients request
+							* Network Handlers - Used for network I/O
+							* Request Handlers - Used for disk I/O
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						* As such, as the brokers get more heavily loaded, 
+						there is a significant impact on this thread pool
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						```
+						JMX MBean:
+						kafka.server:type=KafkaRequestHandlerPool,name=RequestHandlerAvgIdlePercent
+						Value range:
+						Float, between zero and one inclusive
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### All topics bytes in
+
+						* The all topics bytes in rate, expressed in bytes per second, is useful as a measurement
+						of how much message traffic your brokers are receiving from producing clients. 
+						* This is a good metric to trend over time to help you determine when you need to expand 
+						the cluster or do other growth-related work.
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						```
+							JMX MBean kafka.server:type=BrokerTopicMetrics,name=BytesInPerSec
+							Value range
+							Rates as doubles, count as integer
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+					</textarea>
+				</section>
 		</section>
 		<section>
 		<section data-markdown>
