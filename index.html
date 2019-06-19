@@ -69,8 +69,8 @@
                     <section data-markdown>
                             <textarea data-template>
                                     ## The three cake layer
-                                    After some time web applications become *dynamic* 
-                                    * With a three layer architecture
+                                    * After some time, web applications become *dynamic*
+                                    	* With a three layer architecture
 
                                     ![Three layer Architecture](img/threelayer1.png)
                             </textarea>
@@ -143,7 +143,7 @@
                                     ## And then the queue
                                     Async solutions need a way to store the messages submited to processing
                                     * First internal queues
-                                    * But the internal queues had local visibility would not horizontally scale
+                                    	* But the internal queues had local visibility would not horizontally scale
                             </textarea>
                     </section>
                     <section data-markdown>
@@ -191,8 +191,8 @@
                     </section>
                     <section data-markdown>
                             <textarea data-template>
-                                ## Reallity
-                                Multiple pub/sub is hard to do on queues.
+                                ## Reality
+                                Multiple pub/sub is hard to do on queues
                             </textarea>
                     </section>
                 </section>
@@ -234,7 +234,7 @@
                             <textarea data-template>
                                 ## The key idea
                                 * On queues one *puts* another *picks*
-                                * On logs on *puts* another *reads*
+                                * On logs on *writes* another *reads*
                             </textarea>
                     </section>
                     <section data-markdown>
@@ -242,22 +242,22 @@
                                 ## The write/read
                                 The log write/read (as oposed to put/get) has several advantages over queues
                                 * Don't need synchronization between clients because we don't remove as soon as all
-                                consumer read the message.
-                                * If another consumer wants to join he will have the messages to *read* with queues they were
-                                consumed and hence not available
-                                * Durability is straightforward, everything is on disc.
+                                consumer read the message
+								* If another consumer wants to join he will have the messages to *read*.
+								 With queues they were consumed and hence not available
+                                * Durability is straightforward, everything is on disc
                             </textarea>
                     </section>
                     <section data-markdown>
                             <textarea data-template>
                                 ## But will it scale?
-                                Not this simple log.
+                                Not this simple log
                             </textarea>
                     </section>
                     <section id="fragments">
                             <h2>But a distributed log will</h2>
-                            <p class="fragment">Is there anyone</p>
-                            <p class="fragment">This exactly what <a href="">Apache Kakfa</a> is</p>
+                            <p class="fragment">Is there anyone?</p>
+                            <p class="fragment">This is exactly what <a href="">Apache Kakfa</a> is</p>
                     </section>
                 </section>
                 <section>
@@ -278,11 +278,11 @@
                         </section>
                         <section data-markdown>
                                 <textarea data-template>
-                                        ## A streaming platform has three key capabilities:
-                                        * Publish and subscribe to streams of records, 
-                                        similar to a message queue or enterprise messaging system.
+                                        ## A streaming platform has three key capabilities
+										* Publish and subscribe to streams of records, similar to a message 
+										queue or enterprise messaging system
                                         * Store streams of records in a fault-tolerant durable way.
-                                        * Process streams of records as they occur. 
+                                        * Process streams of records as they occur
                                 </textarea>
                         </section>
                         <section data-markdown>
@@ -320,11 +320,6 @@
                         </section>
                         <section data-markdown>
                                 <textarea data-template>
-                                    ## The partition/replication on *Kafka*
-                                </textarea>
-                        </section>
-                        <section data-markdown>
-                                <textarea data-template>
                                     ![Apache Kafka](img/partitionreplication.png)
                                 </textarea>
                         </section>
@@ -341,8 +336,8 @@
                                 <textarea data-template>
 				    ## Timeliness 
 				    Producers and consumers will have different *timeliness* requirements
-				    * Look at Kafka in this context is that it acts as a giant buffer that decou‐
-				    ples the time-sensitivity requirements between producers and consumers.*
+					* *Look at Kafka in this context is that it acts as a giant buffer that 
+					decouples the time-sensitivity requirements between producers and consumers.*
                                 </textarea>
 			</section>
 			<section data-markdown>
@@ -356,7 +351,7 @@
 			<section data-markdown>
 				<textarea data-template>
 					## High and Varying throughput
-					Kafka *push/pull* model enables you to decouple producer and consumer thoroughput, leverage this to
+					Kafka *push/pull* model enables you to decouple producer and consumer throughput, leverage this to
 					* Avoid the implementation of *backpressure* mechanisms
 					* Scale easily
 					* Build a system that is resilient to sudden bursts of data
@@ -403,9 +398,11 @@
 					## Coupling and Agility
 					* Avoid *Ad-Hoc* pipelines
 					  * Plan your data pipeline in advance
-					  * Avoid reactive design (creating consumers producers as needed)
+					  * Avoid reactive design 
+					  	* Creating consumers producers as needed
 					* Avoid Loss of metadata
-					  * Preserve schema information for evolutionary contracts purpose
+					  * Preserve schema information 
+					  	* For evolutionary contracts purpose
 					* Avoid extreme processing
 					  * Extreme processing hurts agility
 					  * Allow downstream components do the decisions
@@ -420,7 +417,7 @@
 			</section>
 			<section data-markdown>
 				<textarea data-template>
-					### Why cross-cluster architectures
+					### Why cross-cluster architectures?
 				</textarea>
 			</section>
 			<section data-markdown>
@@ -464,8 +461,8 @@
 				<textarea data-template>
 					##### Advantages
 					* Leverage of data locality by producing always to the local cluster
-					* Data mirrowed once, to the central cluster
-					* Simple to deploy mirror and monitor
+					* Data mirrowed once to the central cluster
+					* Simple to deploy, mirror and monitor
 				</textarea>
 			</section>
 			<section data-markdown>
@@ -478,7 +475,11 @@
 			<section data-markdown>
 				<textarea data-template>
 					#### Active-Active Architecture
-					![Active-Active](img/activeactive1.png)
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+						![Active-Active](img/activeactive1.png)
 				</textarea>
 			</section>
 			<section data-markdown>
@@ -517,36 +518,36 @@
 			<section data-markdown>
 				<textarea data-template>
 					##### Disadvantages
-					* Wast of resources
+					* Waste of resources
 						* Since it is not actively serving traffic
 					* Failover between kafka clusters harder than it looks
 				</textarea>
 			</section>
 			<section data-markdown>
 				<textarea data-template>
-					##### Unplanned failover strategies
+					#### Unplanned failover strategies
 				</textarea>
 			</section>
 			<section data-markdown>
 				<textarea data-template>
-					#### Start offset applications after failover
+					##### Restart offset after failover
 				</textarea>
 			</section>
 			<section data-markdown>
 				<textarea data-template>
-					#### Auto offset reset
+					##### Auto offset reset
 					* Deal with duplicate or data loss
 				</textarea>
 			</section>
 			<section data-markdown>
 				<textarea data-template>
-					#### Replicate offsets topic
+					##### Replicate offsets topic
 					![Topics Duplication](img/topicsreplication.png)
 				</textarea>
 			</section>
 			<section data-markdown>
 				<textarea data-template>
-					#### Caveats
+					##### Caveats
 					* The replication of offsets will not work in some cases
 						* Some compromises must be done
 				</textarea>
@@ -554,8 +555,8 @@
 			<section data-markdown>
 				<textarea data-template>
 					##### Time-based failover
-					* Version consumers on *0.10* and above have a timestamp in the message
-					this can be used to control the reprocessing of messages
+					* Consumers with version *0.10* or higher have a timestamp in the message
+						* This can be used to control the reprocessing
 					* However you need to deal with data loss or duplicates
 						* The window is much smaller though 
 				</textarea>
@@ -563,6 +564,7 @@
 			<section data-markdown>
 				<textarea data-template>
 					##### External offset mapping
+
 					* Instead of replication of offsets we can map them 
 					(for example to a database)
 						* The window to loss/duplicate of data is even lesser
@@ -571,11 +573,11 @@
 			</section>
 			<section data-markdown>
 				<textarea data-template>
-					##### After the failover
+					#### After the failover
 					* Tempting to switch active to passive and resync
 						* This is tricky
 					* Better to
-						* Become active to passive
+						* Switch from active to passive
 						* Erase the old active cluster 
 						* Start sync with new active
 				</textarea>
@@ -583,6 +585,7 @@
 			<section data-markdown>
 				<textarea data-template>
 					#### Stretch Cluster Architecture
+
 					* One cluster spread across several datacenters
 				</textarea>
 			</section>
@@ -590,7 +593,7 @@
 				<textarea data-template>
 					##### Advantages
 					* Synchronous replication
-					* All datacenters are being used (less wast of resources)
+					* All datacenters are being used (less waste of resources)
 					* Protection against datacenter failures (not application failures)
 				</textarea>
 			</section>
@@ -634,17 +637,17 @@
 						* Better failover control
 					* Monitor the *Lag*
 					* Tune your Mirror Maker cluster
-						* You can use `kafka-performance-producer`
+						* You can use *kafka-performance-producer*
 						to help
-						* Target `lag SLOs`
+						* Target *lag SLOs*
 				</textarea>
 			</section>
 			<section data-markdown>
 				<textarea data-template>
 					#### Other replication tools
-					* [uReplicaticator](https://github.com/uber/uReplicator)
+					* [uReplicator](https://github.com/uber/uReplicator)
 					* [Confluent Replicator](https://docs.confluent.io/current/connect/kafka-connect-replicator/index.html)
-					* Here in PPB we usually use a Storm Topology
+					* Here in PPB we usually use a *Storm Topology*
 						* It has all the failover and scalling capabilities we need
 				</textarea>
 			</section>
@@ -793,18 +796,19 @@
 					<textarea data-template>
 						#### Acks trade-off
 
-						* The less you care for broker responses the higher the risk for loss of messages
-						* The less you care for broker responses the higher the throughput of your system
+						* The less you care for broker *acks*, the higher the risk for loss of messages
+						* The less you care for broker *acks*, the higher the throughput of your system
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
 						##### Buffer memory (buffer.memory)
 
-						* Buffer used by the producer. 
-						* If the buffer is filled and no more messages are possible to hold an exception is
-						thrown.
-						* Filling of buffer usually means broker not being able to keep up with production rate
+						* Buffer used by the producer
+						* If the buffer is filled and no more messages are possible to hold,
+						an exception is thrown
+						* Filling of buffer usually means the broker is not being able to keep up 
+						with production rate
 					</textarea>
 				</section>
 				<section data-markdown>
@@ -812,7 +816,7 @@
 						##### Compression Type (compression.type)
 						
 						* By default messages are uncompressed
-						* This parameter can be set to:
+						* This parameter can be set to
 							* [Snappy](https://en.wikipedia.org/wiki/Snappy_(compression))
 							* [LZ4](https://en.wikipedia.org/wiki/LZ4_(compression_algorithm))
 							* [Gzip](https://en.wikipedia.org/wiki/Gzip)
@@ -822,7 +826,7 @@
 					<textarea data-template>
 						#### Retries 
 						
-						* Number of retries the producer will atempt before throwing an exception
+						* Number of retries that the producer will atempt, before throwing an exception
 						* Producer will hold 100ms by default between atempts
 							* This can be overrided with *retry.backoff.ms* parameter
 					</textarea>
@@ -843,15 +847,15 @@
 						* Latency is a concern. We need a way to guarantee that messages are sent even
 						if the batch buffer is not completly filled
 						* *linger.ms* is the time in milliseconds that the producer will wait
-						for batch buffer completion.
-						* After this time the messages on the batch are sent anyway.
+						for batch buffer completion
+						* After this time the messages on the batch are sent anyway
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
 						#### Client ID (client.id)
 
-						* *client.id* is just a tag sent by the producer for the brokers be able
+						* *client.id* is just a tag sent by the producer for the brokers to be able
 						to identify the client
 							* Used for logging, metrics and quotas
 					</textarea>
@@ -861,9 +865,12 @@
 						#### Max Inflight Requests/Connection (max.in.flight.requests.per.connection)
 
 						* This controls the maximum number of pending requests in flight
-							* Increasing this will increase throughput while increasing also memory footprint
-							* Setting to 1 will guarantee that messages will be sent to kafka in order
-							while sacrificing throughput
+							* Increasing this will
+								* Increase throughput
+								* Increase memory footprint
+							* Setting to 1 will 
+								* Guarantee that messages will be sent to kafka in order
+								* Sacrifice throughput
 					</textarea>
 				</section>
 				<section data-markdown>
@@ -871,16 +878,16 @@
 						#### Timeouts
 
 						* *timeout.ms* -- Controls the time the broker will wait for in-sync replicas to acknowledge the message
-						in order to meet the acks configuration—the broker will return an error if the time
-						elapses without the necessary acknowledgments.
+						in order to meet the acks configuration. The broker will return an error if the time
+						elapses without the necessary acknowledgments
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
 						* *request.timeout.ms* -- Controls how long the producer will wait for a reply from the server
-						when sending data.
+						when sending data
 						* *metadata.fetch.timeout.ms* -- Controls how long will wait while requesting 
-						metadata such as the current leaders for the partitions.
+						metadata such as the current leaders for the partitions
 					</textarea>
 				</section>
 				<section data-markdown>
@@ -1491,6 +1498,152 @@ when explicitly requesting metadata via *partitionsFor()*
 				</section>
 		</section>
 		<section>
+			<section data-markdown>
+					<textarea data-template>
+						## Zookeeper Overview
+					</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					### What is zookeeper anyway?
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+						* Apache ZooKeeper is an effort to develop and maintain an open-source 
+						server which enables highly reliable distributed coordination.
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					### Cool, and this means?
+					* First what do we really mean by a distributed system?
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					### A distributed system
+					
+					* A distributed system is a system whose components are located on different networked computers, 
+					which communicate and coordinate their actions by passing messages to one another
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					### Coordination is the secret
+
+					* All distributed systems have some way or another to coordinate synchronize 
+					the cluster.
+					* It turns out that this is a difficult problem to solve right
+					* Turns out also, this is a very frequent problem to solve.
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					### Hence Zookeeper
+
+					* Zookeeper born from the need to solve the need to coordinate actions beetween
+					the members of the cluster
+					* This actions usually means
+						* Leader election mechanisms
+						* Service discovery
+						* Cluster metadata management
+
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					### Applications that use Zookeeper
+
+					* [Apache HBase](https://hbase.apache.org/)
+						* HBase is a data store typically used alongside Hadoop. 
+						In HBase, ZooKeeper is used to elect a cluster master, 
+						to keep track of available servers, and to keep cluster
+					metadata.
+
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					* [Apache Solr](https://lucene.apache.org/solr/)
+						* Solr is an enterprise search platform. In its distributed form, 
+						called SolrCloud, it uses ZooKeeper to store metadata about the 
+						cluster and coordinate the updates to this metadata.
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					* Yahoo! Fetching Service
+						* Part of a crawler implementation, the Fetching Service fetches web pages efficiently
+						by caching content while making sure that web server policies, such as those in 
+						robots.txt files, are preserved. This service uses ZooKeeper for tasks such as master
+						election, crash detection, and metadata storage.
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+						* Facebook Messages
+							* This is a Facebook application that integrates communication channels: email, SMS, Facebook Chat, 
+							and the existing Facebook Inbox. It uses ZooKeeper as a controller for implementing 
+							sharding and failover, and also for service discovery.
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+						### What zookeeper is not for
+
+						* Zookeeper is not a data storage for common data.
+						* It should be used mainly for critical metadata used essencially for the cluster coordination
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					### Zookeeper ZNodes
+					<img src="img/zstructure.png" width="50%" alt="Zookeeper Filesystem"/>
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					### The Zookeeper API
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+						```create /path data```
+
+						* Creates a znode named with /path and containing data
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					```delete /path```
+					
+					* Deletes the znode /path
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					```exists /path```
+					
+					* Checks whether /path exists
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					```setData /path data```
+					
+					* Sets the data of znode /path to data
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+					```getData /path```
+					
+					* Returns the data in /path
+				</textarea>
+			</section>
+		</section>
+		<section>
 				<section data-markdown>
 					<textarea data-template>
 						## Kafka Internals
@@ -1842,6 +1995,7 @@ when explicitly requesting metadata via *partitionsFor()*
 						```
 						JMX MBean:
 						kafka.server:type=KafkaRequestHandlerPool,name=RequestHandlerAvgIdlePercent
+						
 						Value range:
 						Float, between zero and one inclusive
 						```
@@ -1853,14 +2007,17 @@ when explicitly requesting metadata via *partitionsFor()*
 
 						* The all topics bytes in rate, expressed in bytes per second, is useful as a measurement
 						of how much message traffic your brokers are receiving from producing clients. 
-						* This is a good metric to trend over time to help you determine when you need to expand 
+						* This is a good metric to help you determine when you need to expand 
 						the cluster or do other growth-related work.
+						* Identify need for rebalance
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
 						```
-							JMX MBean kafka.server:type=BrokerTopicMetrics,name=BytesInPerSec
+							JMX MBean:
+							kafka.server:type=BrokerTopicMetrics,name=BytesInPerSec
+							
 							Value range
 							Rates as doubles, count as integer
 						```
@@ -1868,22 +2025,48 @@ when explicitly requesting metadata via *partitionsFor()*
 				</section>
 				<section data-markdown>
 					<textarea data-template>
+						#### All topics bytes out
+
+						* Similar to previous metric 
+						* Usefull to understand the level of consumption on the broker
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
+						```
+							MX MBean:
+							kafka.server:type=BrokerTopicMetrics,name=BytesOutPerSec
+							
+							Value range:
+							Rates as doubles, count as integer
+						```
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
+						#### All topics messages in
+
+						* Used to track number of messages produced
+						* Usefull to compute average message payload size when in combination
+						with all topics bytes in
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
+						```
+							MX MBean:
+							kafka.server:type=BrokerTopicMetrics,name=MessagesInPerSec
+							Value range:
+							Rates as doubles, count as integer
+						```
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
+						#### Leader count
+
+						* Partition leaders should be evenly distributed across the brokers
+						* This metric is usefull to identify unbalanced leader distribution
 					</textarea>
 				</section>
 				<section data-markdown>
