@@ -2048,18 +2048,83 @@ when explicitly requesting metadata via *partitionsFor()*
 				</section>
 				<section data-markdown>
 					<textarea data-template>
+						### Quotas 
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
+						* Some people are naughty
+							* The same for consumer/producers 
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
+						* Quotas are used to throotle consumer/producer requests
+						* Usefefull to avoid DOS by misbehaving applications
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
+						* Quotas are defined in zookeeper
+							* User quota overrides */config/users*
+							* Client quota overrides */config/clients*
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						```
+							/config/users/<user>/clients/<client-id>
+							/config/users/<user>/clients/<default>
+							/config/users/<user>
+							/config/users/<default>/clients/<client-id>
+							/config/users/<default>/clients/<default>
+							/config/users/<default>
+							/config/clients/<client-id>
+							/config/clients/<default>
+		
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						### Some examples 
+						* Configure custom quota for (user=user1, client-id=clientA) 
+						```
+							bin/kafka-configs.sh  
+							--zookeeper localhost:2181 
+							--alter 
+							--add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' 
+							--entity-type users 
+							--entity-name user1 
+							--entity-type clients 
+							--entity-name clientA
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						* Configure custom quota for user=user1
+						```
+							bin/kafka-configs.sh  
+							--zookeeper localhost:2181 
+							--alter 
+							--add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' 
+							--entity-type users 
+							--entity-name user1
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						* Configure custom quota for client-id=clientA: 
+						```
+							bin/kafka-configs.sh  
+							--zookeeper localhost:2181 
+							--alter 
+							--add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' 
+							--entity-type clients 
+							--entity-name clientA
+						```
 					</textarea>
 				</section>
 		</section>
@@ -2240,6 +2305,91 @@ when explicitly requesting metadata via *partitionsFor()*
 						Value range:
 						Integer, zero or greater
 						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Request metrics
+
+						```
+							Name					JMX MBean
+							Total time				kafka.network:type=RequestMetrics,name=TotalTimeMs,request=Fetch
+							Request queue time		kafka.network:type=RequestMetrics,name=RequestQueueTimeMs,request=Fetch
+							Local time 				kafka.network:type=RequestMetrics,name=LocalTimeMs,request=Fetch
+							Remote time				kafka.network:type=RequestMetrics,name=RemoteTimeMs,request=Fetch
+							Throttle time 			kafka.network:type=RequestMetrics,name=ThrottleTimeMs,request=Fetch
+							Response queue time 	kafka.network:type=RequestMetrics,name=ResponseQueueTimeMs,request=Fetch
+							Response send time 		kafka.network:type=RequestMetrics,name=ResponseSendTimeMs,request=Fetch
+							Requests per second 	kafka.network:type=RequestMetrics,name=RequestsPerSec,request=Fetch
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Topic and Partition metrics
+						```
+							Name					JMX MBean
+							Bytes in rate			kafka.server:type=BrokerTopicMetrics,name=BytesInPerSec,topic=TOPICNAME
+							Bytes out rate			kafka.server:type=BrokerTopicMetrics,name=BytesOutPerSec,topic=TOPICNAME
+							Failed fetch rate		kafka.server:type=BrokerTopicMetrics,name=FailedFetchRequestsPerSec,topic=TOPICNAME
+							Failed produce rate		kafka.server:type=BrokerTopicMetrics,name=FailedProduceRequestsPerSec,topic=TOPICNAME
+							Messages in rate		kafka.server:type=BrokerTopicMetrics,name=MessagesInPerSec,topic=TOPICNAME
+							Fetch request rate		kafka.server:type=BrokerTopicMetrics,name=TotalFetchRequestsPerSec,topic=TOPICNAME
+							Produce request rate	kafka.server:type=BrokerTopicMetrics,name=TotalProduceRequestsPerSec,topic=TOPICNAME
+							Partition size			kafka.log:type=Log,name=Size,topic=TOPICNAME,partition=0
+							Log segment count 		kafka.log:type=Log,name=NumLogSegments,topic=TOPICNAME,partition=0
+							Log end offset 			kafka.log:type=Log,name=LogEndOffset,topic=TOPICNAME,partition=0
+							Log start offset 		kafka.log:type=Log,name=LogStartOffset,topic=TOPICNAME,partition=0
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Producer Metrics
+
+						```
+							Name					JMX MBean
+							Overall Producer 		kafka.producer:type=producer-metrics,client-id=CLIENTID
+							Per-Broker 				kafka.producer:type=producer-node-metrics,client-id=CLIENTID,node-id=node-BROKERID
+							Per-Topic 				kafka.producer:type=producer-topic-metrics,client-id=CLIENTID,topic=TOPICNAME
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Consumer Metrics
+
+						```
+						Name						JMX MBean
+							Overall Consumer 			kafka.consumer:type=consumer-metrics,client-id=CLIENTID
+							Fetch Manager 				kafka.consumer:type=consumer-fetch-manager-metrics,client-id=CLIENTID
+							Per-Topic 					kafka.consumer:type=consumer-fetch-manager-metrics,client-id=CLIENTID,topic=TOPICNAME
+							Per-Broker 					kafka.consumer:type=consumer-node-metrics,client-id=CLIENTID,node-id=node-BROKERID
+							Coordinator 				kafka.consumer:type=consumer-coordinator-metrics,client-id=CLIENTID
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						#### Quotas Metrics
+						
+						```
+						Client						JMX MBean
+						Consumer bean 				kafka.consumer:type=consumer-fetch-manager-metrics,client-id=CLIENTID ,attribute fetch-throttle-time-avg
+						Producer bean 				kafka.producer:type=producer-metrics,client-id=CLIENTID , attribute produce-throttle-time-avg
+						```
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						##### Burrow
+
+						* [Burrow](https://github.com/linkedin/Burrow) is a consumer lag monitoring tool developed by 
+						[LinkedIn](https://engineering.linkedin.com/apache-kafka/burrow-kafka-consumer-monitoring-reinvented)
+					</textarea>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
 					</textarea>
 				</section>
 				<section data-markdown>
