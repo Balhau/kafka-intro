@@ -1006,7 +1006,7 @@ when explicitly requesting metadata via *partitionsFor()*
 					<textarea data-template>
 						### Same Consumer Group
 
-						* The same consumer group enable easy implementation of:
+						* The same consumer group enable easy implementation of
 							* Load balancing
 							* Failover mechanisms
 					</textarea>
@@ -1015,9 +1015,9 @@ when explicitly requesting metadata via *partitionsFor()*
 					<textarea data-template>
 						### Different Consumer Group
 
-						* Different consumer groups enables:
+						* Different consumer groups enables
 							* Independent consumption from different applications
-							* This leads to better scalling capabilities.
+							* Better scalling capabilities
 					</textarea>
 				</section>
 				<section data-markdown>
@@ -1111,11 +1111,11 @@ when explicitly requesting metadata via *partitionsFor()*
 						#### Notes on thread safety
 						
 						* You can’t have multiple consumers that belong to the same group
-						in one thread.
-						* You can’t have multiple threads safely use the same consumer.
-						* One consumer per thread is the rule.
+						in one thread
+						* You can’t have multiple threads safely using the same consumer
+						* One consumer per thread is the rule
 						* To run multiple consumers in the same group in one application, you will
-						need to run each in its own thread.
+						need to run each in its own thread
 						* See more details in [this confluent tutorial](https://www.confluent.io/blog/tutorial-getting-started-with-the-new-apache-kafka-0-9-consumer-client/)
 					</textarea>
 				</section>
@@ -1140,9 +1140,8 @@ when explicitly requesting metadata via *partitionsFor()*
 						#### Fetch maximum wait (fetch.max.wait.ms)
 
 						* This parameter sets the maximum amount of time (in milliseconds) that
-						the request call can be blocked.
+						the request call can be blocked
 						* If the minimum bytes is not reached the data batched is returned anyway
-						*
 					</textarea>
 				</section>
 				<section data-markdown>
@@ -1162,7 +1161,7 @@ when explicitly requesting metadata via *partitionsFor()*
 						#### Session Timeout milliseconds (session.timeout.ms)
 
 						* This parameter sets the maximum time that the consumer can be without comunication with
-						the coordinator.
+						the coordinator
 							* If the timeout is reached the coordinator will launch a rebalance to allocate partitions
 							from this (now considered dead) consumer to other consumers in the group
 						* The parameter *heartbeat.interval.ms* defines the interval of heartbeats from the consumer
@@ -1183,7 +1182,7 @@ when explicitly requesting metadata via *partitionsFor()*
 						#### Auto commit (enable.auto.commit)
 
 						* This is a boolean parameter that will enable/disable the automatic submition of 
-						consumed offsets from the consumer
+						consumed offsets
 					</textarea>
 				</section>
 				<section data-markdown>
@@ -1192,7 +1191,7 @@ when explicitly requesting metadata via *partitionsFor()*
 
 						* This parameter holds the name of the class that will be responsible to
 						define the way partitions are assigned to consumers
-						* There are two default implementations:
+						* There are two default implementations
 							* Range 
 							* RoundRobin
 					</textarea>
@@ -1201,7 +1200,7 @@ when explicitly requesting metadata via *partitionsFor()*
 					<textarea data-template>
 						##### Range Partition Assignment Strategy
 						* Assigns to each consumer a consecutive subset of partitions
-						 from each topic it subscribes to:
+						 from each topic it subscribes to
 						 	* If consumers C1 and C2 are subscribed to two topics, T1 and
 							 T2, and each of the topics has three partitions, then C1 will be assigned partitions
 							 0 and 1 from topics T1 and T2, while C2 will be assigned partition 2 from those
@@ -1213,7 +1212,7 @@ when explicitly requesting metadata via *partitionsFor()*
 						##### RoundRobin Partition Assignment Strategy
 						
 						* Takes all the partitions from all subscribed topics and assigns them to consumers
-						sequentially, one by one.
+						sequentially, one by one
 							* If C1 and C2 described previously used RoundRobin assignment, 
 							C1 would have partitions 0 and 2 from topic T1 and partition 1 from
 							topic T2. C2 would have partition 1 from topic T1 and partitions 0 and 2 from
@@ -1233,7 +1232,7 @@ when explicitly requesting metadata via *partitionsFor()*
 					<textarea data-template>
 						#### Maximum pool records (max.poll.records)
 
-						* Will define the maximum amount of *ConsumerRecords* returned by *pool* call.
+						* Will define the maximum amount of *ConsumerRecords* returned by *pool* call
 					</textarea>
 				</section>
 				<section data-markdown>
@@ -1266,7 +1265,7 @@ when explicitly requesting metadata via *partitionsFor()*
 						#### Automatic Commit
 
 						* This will be done periodically with the highest value returned by *pool*
-						call.
+						call
 							* The period of submission is defined by the parameter *auto.commit.interval.ms*
 					</textarea>
 				</section>
@@ -1706,8 +1705,8 @@ when explicitly requesting metadata via *partitionsFor()*
 						* Follower replicas issue fetch requests
 						* Leader replica keep track of the fech requests from each replica
 						and validate which of them are in-sync based on the property *replica.lag.time.max.ms*
-							* If a follower replica don't send a fetch request in the timeout defined by the 
-							previous parameter is considered *out of sync*
+							* If a follower replica don't send a fetch request, in the timeout defined by the 
+							previous parameter, is considered *out of sync*
 					</textarea>
 				</section>
 				<section data-markdown>
@@ -1756,8 +1755,8 @@ when explicitly requesting metadata via *partitionsFor()*
 
 						* The requests processor has two processor queues
 							* One for *Fetch Requests* sent by consumers and follower replicas when they read 
-							messages from Kafka brokers.
-							* One for *Produce Requests* sent by producers and contain messages the clients write to Kafka brokers.
+							messages from Kafka brokers
+							* One for *Produce Requests* sent by producers and contain messages the clients write to Kafka brokers
 					</textarea>
 				</section>
 				<section data-markdown>
@@ -1770,7 +1769,7 @@ when explicitly requesting metadata via *partitionsFor()*
 					<textarea data-template>
 						* Clients issue *Metadata Requests* to retrieve meta information from the cluster
 							* Like which is the leader for the partition *A* of topic *B*
-						* These *Metadata Requests* are cached by the clients based on a configuration 
+							* These *Metadata Requests* are cached by the clients based on a configuration 
 						parameter *metadata.max.age.ms*
 					</textarea>
 				</section>
@@ -1790,9 +1789,9 @@ when explicitly requesting metadata via *partitionsFor()*
 					<textarea data-template>
 						#### Other Kafka Protocol Messages
 
-						* The kafka protocol supports around 20 other message types, namely:
+						* The kafka protocol supports around 20 other message types, namely
 							* OffsetCommitRequest
-								* Introduced to support consumer offsets management in kafka
+								* Introduced to support consumer offsets management in kafka,
 								instead of zookeeper
 							* OffsetFetchRequest
 							* ListOffsetsRequest 
@@ -1820,17 +1819,17 @@ when explicitly requesting metadata via *partitionsFor()*
 					<textarea data-template>
 						##### Goals to achieve
 
-						* Distribute evenly the replicas across the brokers.
+						* Distribute evenly the replicas across the brokers
 							* In this case we would like to have 10 replicas per broker
 						* Avoid replicas for the same partition on the same broker
-							* The means that for all the 10 replicas on the broker they 
+							* This means that for all the 10 replicas on the broker they 
 							relate to non repeated partitions
 					</textarea>
 				</section>
 				<section data-markdown>
 					<textarea data-template>
 						* If the brokers have rack information, then assign the replicas for 
-						each partition to different racks if possible.
+						each partition to different racks if possible
 							* Available in Kafka release 0.10.0 and higher
 					</textarea>
 				</section>
@@ -1850,7 +1849,7 @@ when explicitly requesting metadata via *partitionsFor()*
 						### File Management
 						
 						* The data of a *partition replica* lives inside a *log* file and they are
-						divided into *segments*.
+						divided into *segments*
 						* They rotate based on topic configurations
 						* Rotated segments are deleted or compacted based on topic policy 
 						* The segment that is being used for write operations is called *active segment*
@@ -1860,7 +1859,7 @@ when explicitly requesting metadata via *partitionsFor()*
 					<textarea data-template>
 						### File format
 						
-						* The file format is very close with the in memory representation.
+						* The file format is very close with the *in memory* representation
 							* This enables a *zero-copy* strategy when sending data to consumers
 							* Avoid recompression of already compressed data from the producer
 					</textarea>
@@ -1930,7 +1929,7 @@ when explicitly requesting metadata via *partitionsFor()*
 					<textarea data-template>
 						* This measurement, provided on each broker in a cluster, 
 						gives a count of the number of partitions for which the
-						broker is the leader replica, where the follower replicas are not caught up.
+						broker is the leader replica, where the follower replicas are not caught up
 					</textarea>
 				</section>
 				<section data-markdown>
@@ -1951,8 +1950,8 @@ when explicitly requesting metadata via *partitionsFor()*
 				<section data-markdown>
 					<textarea data-template>
 						* The previous command shows consistently that the broker with id 2 is with problems
-						keeping up in sync with the rest of the cluster. 
-						* A more in depth analysis should be done on this broker
+						keeping up in sync, with the rest of the cluster 
+						* A more in-depth analysis should be done on this broker
 					</textarea>
 				</section>
 				<section data-markdown>
@@ -2005,10 +2004,10 @@ when explicitly requesting metadata via *partitionsFor()*
 					<textarea data-template>
 						#### All topics bytes in
 
-						* The all topics bytes in rate, expressed in bytes per second, is useful as a measurement
-						of how much message traffic your brokers are receiving from producing clients. 
+						* The *all topics bytes in* rate, expressed in bytes per second, is useful as a measurement
+						of how much message traffic your brokers are receiving from producing clients
 						* This is a good metric to help you determine when you need to expand 
-						the cluster or do other growth-related work.
+						the cluster or do other growth-related work
 						* Identify need for rebalance
 					</textarea>
 				</section>
@@ -2148,6 +2147,7 @@ when explicitly requesting metadata via *partitionsFor()*
 		<section data-markdown>
 			<textarea data-template>
 				Describe topic partitions not in sync
+
 				```
 				kafka-topics.sh --zookeeper zoo1.example.com:2181/kafka-cluster
 				--describe 
@@ -2167,19 +2167,21 @@ when explicitly requesting metadata via *partitionsFor()*
 			<textarea data-template>
 				List consumer groups
 				* Old kafka clusters
-				```
-				kafka-consumer-groups.sh 
-				--zookeeper zoo1.example.com:2181/kafka-cluster 
-				--list
 				
-				console-consumer-79697
-				myconsumer
+				```
+					kafka-consumer-groups.sh 
+					--zookeeper zoo1.example.com:2181/kafka-cluster 
+					--list
+					
+					console-consumer-79697
+					myconsumer
 				```
 
 				* New kafka clusters
+
 				```
-				./kafka-consumer-groups.sh 
-				--bootstrap-server localhost:9092 -list
+					./kafka-consumer-groups.sh 
+					--bootstrap-server localhost:9092 -list
 				```
 			</textarea>
 		</section>
@@ -2205,18 +2207,18 @@ when explicitly requesting metadata via *partitionsFor()*
 		<section data-markdown>
 			<textarea data-template>
 				* Delete consumer group
-				* If you don't provide the `--topic` argument it will delete the consumer group for
+				* If you don't provide the *--topic* argument it will delete the consumer group for
 				all the topics.
 
 				```
-				kafka-consumer-groups.sh 
-				--zookeeper zoo1.example.com:2181/kafka-cluster 
-				--delete 
-				--group testgroup
-				--topic my-topic
-				
-				Deleted all consumer group information for group testgroup topic
-				my-topic in zookeeper.
+					kafka-consumer-groups.sh 
+					--zookeeper zoo1.example.com:2181/kafka-cluster 
+					--delete 
+					--group testgroup
+					--topic my-topic
+					
+					Deleted all consumer group information for group testgroup topic
+					my-topic in zookeeper.
 
 				```
 			</textarea>
@@ -2225,13 +2227,14 @@ when explicitly requesting metadata via *partitionsFor()*
 			<textarea data-template>
 					### Offset management
 					#### Some old deprecated tools
+
 					* Export offsets for a consumer group
 
 					```
-					kafka-run-class.sh kafka.tools.ExportZkOffsets
-					--zkconnect zoo1.example.com:2181/kafka-cluster 
-					--group testgroup
-					--output-file offsets
+						kafka-run-class.sh kafka.tools.ExportZkOffsets
+						--zkconnect zoo1.example.com:2181/kafka-cluster 
+						--group testgroup
+						--output-file offsets
 					```
 			</textarea>
 		</section>
@@ -2240,9 +2243,9 @@ when explicitly requesting metadata via *partitionsFor()*
 					* Import offsets for a consumer group
 
 					```
-					kafka-run-class.sh kafka.tools.ImportZkOffsets 
-					--zkconnect zoo1.example.com:2181/kafka-cluster 
-					--input-file offsets
+						kafka-run-class.sh kafka.tools.ImportZkOffsets 
+						--zkconnect zoo1.example.com:2181/kafka-cluster 
+						--input-file offsets
 					```
 			</textarea>
 		</section>
@@ -2318,28 +2321,28 @@ when explicitly requesting metadata via *partitionsFor()*
 					* For large clusters this command is not possible due a 1MB zookeeper request limit
 					* You need to break down into several elections based on files
 					
-						{
-							"partitions":
-							[
-							{"topic": "topic1", "partition": 0},
-							{"topic": "topic1", "partition": 1},
-							{"topic": "topic1", "partition": 2},
-							{"topic": "topic2", "partition": 0},
-							{"topic": "topic2", "partition": 1}
-							]
-						}
+							{
+								"partitions":
+								[
+								{"topic": "topic1", "partition": 0},
+								{"topic": "topic1", "partition": 1},
+								{"topic": "topic1", "partition": 2},
+								{"topic": "topic2", "partition": 0},
+								{"topic": "topic2", "partition": 1}
+								]
+							}
 			</textarea>
 		</section>
 			<section data-markdown>
 				<textarea data-template>
-						#### The `kafka auto.leader.rebalance.enable` flag
+						#### The *kafka auto.leader.rebalance.enable* flag
 				</textarea>
 			</section>
 			<section data-markdown>
 				<textarea data-template>
 					* If possible this flag should be true to avoid manual intervention on the cluster
 					* There are significant performance impacts caused by the automatic balancing module, and it can cause a lengthy pause in client traffic for larger
-					clusters.
+					clusters
 				</textarea>
 			</section>
 			<section data-markdown>
@@ -2349,7 +2352,7 @@ when explicitly requesting metadata via *partitionsFor()*
 			</section>
 			<section data-markdown>
 				<textarea data-template>
-					* First create a `json` file containing the topics for which you want the replicas reassigned
+					* First create a *json* file containing the topics for which you want the replicas reassigned
 
 						```
 						{
@@ -2376,7 +2379,7 @@ when explicitly requesting metadata via *partitionsFor()*
 			</section>
 			<section data-markdown>
 				<textarea data-template>
-					* The previous command will generate a json output with a proposal of reasignment.
+					* The previous command will generate a json output with a proposal of reasignment
 					* Use this proposal to reassign the replicas
 
 							kafka-reassign-partitions.sh 
@@ -2391,8 +2394,8 @@ when explicitly requesting metadata via *partitionsFor()*
 					#### Note
 					
 					* When removing many partitions from a single broker, such as if
-that broker is being removed from the cluster, it is a best practice:
-						* To shut down and restart the broker before starting the reassignment.				</textarea>
+that broker is being removed from the cluster, it is a best practice
+						* To shut down and restart the broker before starting the reassignment				</textarea>
 			</section>
 			<section data-markdown>
 				<textarea data-template>
@@ -2401,9 +2404,9 @@ that broker is being removed from the cluster, it is a best practice:
 
 					* This will move leadership for the partitions on that particular
 					broker to other brokers in the cluster (as long as automatic leader
-					elections are not enabled). This can significantly increase the per‐
-					formance of reassignments and reduce the impact on the cluster as
-					the replication traffic will be distributed to many brokers.
+					elections are not enabled). This can significantly increase the performance 
+					of reassignments and reduce the impact on the cluster as
+					the replication traffic will be distributed to many brokers
 						
 				</textarea>
 			</section>
@@ -2451,7 +2454,7 @@ that broker is being removed from the cluster, it is a best practice:
 				<textarea data-template>
 					#### Console Producer
 
-					* Enable you to quickly test the producition to a topic
+					* Enable you to quickly test the production to a topic
 
 					```
 					kafka-console-producer.sh 
@@ -2526,7 +2529,7 @@ that broker is being removed from the cluster, it is a best practice:
 			</section>
 			<section data-markdown>
 				<textarea data-template>
-					* To validate the log is not corrupted
+					* To validate that the log is not corrupted
 
 					```
 					kafka-run-class.sh 
@@ -2549,6 +2552,15 @@ that broker is being removed from the cluster, it is a best practice:
 			</section>
 			<section data-markdown>
 				<textarea data-template>
+					#### Setup Kafka Listeners
+
+					* Kafka Listeneres and a good use case is described 
+					[here](https://rmoff.net/2018/08/02/kafka-listeners-explained/)
+
+					* We should pay special attention to the *KAFKA_ADVERTISED_LISTENERS* 
+					because they will be used by clients for name resolution. 
+					* If you don't set properly this configuration you can denial the service 
+					to clients
 				</textarea>
 			</section>
 			<section data-markdown>
@@ -2607,6 +2619,7 @@ that broker is being removed from the cluster, it is a best practice:
 				<section data-markdown>
 					<textarea data-template>
 						#### First build the images
+						
 						* First run the following to build the images
 						```
 						cd centos && make build && cd ..
@@ -2627,7 +2640,7 @@ that broker is being removed from the cluster, it is a best practice:
 				</section>
 				<section data-markdown>
 					<textarea data-template>
-						Bootstrap kafka environment with `docker-compose`
+						Bootstrap kafka environment with *docker-compose*
 						```
 						docker-compose -f compose/kafka-env.yml build
 						docker-compose -f compose/kafka-env.yml up
@@ -2636,7 +2649,7 @@ that broker is being removed from the cluster, it is a best practice:
 				</section>
 				<section data-markdown>
 					<textarea data-template>
-						* Now list your docker images with `docker images`
+						* Now list your docker images with *docker images*
 						```
 						REPOSITORY          TAG                 IMAGE ID            CREATED      
 						compose_cassandra   latest              c242778cee7e        3 minutes ago
@@ -2647,7 +2660,8 @@ that broker is being removed from the cluster, it is a best practice:
 				<section data-markdown>
 					<textarea data-template>
 						* You also have your container running, check this by running
-						`docker ps`
+						*docker ps*
+						
 						```
 						CONTAINER ID        IMAGE               COMMAND                  CREATED
 						219b05b407a2        compose_kafka       "/bin/sh -c /opt/sta…"   5 seconds ago
@@ -2659,12 +2673,13 @@ that broker is being removed from the cluster, it is a best practice:
 				<section data-markdown>
 					<textarea data-template>
 						* Access your containers with
+						
 						```
 						docker exec -it <containerId> <shell>
 						docker exec -it 219b05b407a2 bash
 						```
 
-						* For [alpine](https://hub.docker.com/_/alpine) based containers you would replace `bash` with `ash`
+						* For [alpine](https://hub.docker.com/_/alpine) based containers you would replace *bash* with *ash*
 					</textarea>
 				</section>
 
@@ -2672,11 +2687,11 @@ that broker is being removed from the cluster, it is a best practice:
 					<textarea data-template>
 						#### Manual vs Docker based approach
 
-						* Manual approach is simpler, straightforward. 
+						* Manual approach is simpler, straightforward 
 						* Manual approach is not reproductible
-						* Manual approach is harder to build different combinations tech stacks
-						* Local Cluster setup can be automated in docker and docker compose
-						scripts and then shared among people
+						* With manual approach is harder to build different combinations tech stacks
+						* Local Cluster setup can be automated in *docker* and *docker compose*
+						scripts, then shared among people
 
 					</textarea>
 				</section>
