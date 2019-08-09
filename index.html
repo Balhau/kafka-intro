@@ -143,7 +143,7 @@
                                     ## And then the queue
                                     Async solutions need a way to store the messages submited to processing
                                     * First internal queues
-                                    	* But the internal queues had local visibility would not horizontally scale
+                                    	* But the internal queues had local visibility would not scale horizontally
                             </textarea>
                     </section>
                     <section data-markdown>
@@ -161,7 +161,7 @@
                     </section>
                     <section>
                             <h2>The Queue Era</h2>
-                            <p>Several queue implementation mechanisms arrive to solve the world</p>
+                            <p>Several queue implementation mechanisms arrive to solve this</p>
                             <img src="img/rabbitmq.png" width="50%"/>
                             <img src="img/activemq.png"/>
                     </section>
@@ -176,7 +176,7 @@
                                 ## Queues...
                                 * Don't scale horizontally
                                 * Don't persist data easily
-                                * Don't shard
+                                * Don't shard data easily
                                 * Multiple publisher/subscriber is hard
                             </textarea>
                     </section>
@@ -185,7 +185,7 @@
                             <textarea data-template>
                                 ## What is wrong then?
                                 * Queues implementation are memory oriented, memory is volatile.
-                                * Queue paradigm is based on the principle that one puts other gests
+                                * Queue paradigm is based on the principle that one puts other gets
                                     * With multiple subscribers some of them fail... *some for very long*
                             </textarea>
                     </section>
